@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { supabase } from '@/lib/supabase/client';
-import { generateDeviceId } from '@/lib/utils';
+import { getVisitorId, getCachedVisitorId } from '@/lib/fingerprint';
 import NicknameSetup from '@/components/auth/NicknameSetup';
 
 export default function QRLoginPage() {
@@ -22,7 +22,27 @@ export default function QRLoginPage() {
 
   const checkExistingUser = async () => {
     try {
-      const deviceId = generateDeviceId();
+      // Try cached visitor ID first for faster check
+      const cachedId = getCachedVisitorId();
+      
+      if (cachedId) {
+        // Quick check with cached ID
+        const { data: quickCheck } = await supabase
+          .from('users')
+          .select('id, nickname, role, language')
+          .eq('device_id', cachedId)
+          .single();
+
+        if (quickCheck) {
+          // Found user, auto-login immediately
+          await handleAutoLogin(quickCheck);
+          return;
+        }
+      }
+
+      // Get full fingerprint (if cached ID didn't work or doesn't exist)
+      const deviceId = await getVisitorId();
+      
       const { data: existingUser } = await supabase
         .from('users')
         .select('id, nickname, role, language')
@@ -49,8 +69,8 @@ export default function QRLoginPage() {
   const handleAutoLogin = async (userData: { id: string; nickname: string; role: string; language: string | null }) => {
     const language = localStorage.getItem('language') || userData.language || 'en';
     
-    // Update language preference if changed
-    await supabase
+    // Update language preference if changed (fire and forget - don't wait)
+    supabase
       .from('users')
       .update({ language: language })
       .eq('id', userData.id);
@@ -60,7 +80,7 @@ export default function QRLoginPage() {
     localStorage.setItem('user_nickname', userData.nickname);
     localStorage.setItem('user_role', userData.role);
 
-    // Redirect to chat
+    // Redirect to chat immediately
     router.push(`/${language}/chat`);
   };
 
@@ -69,7 +89,7 @@ export default function QRLoginPage() {
     setError(null);
 
     try {
-      const deviceId = generateDeviceId();
+      const deviceId = await getVisitorId();
       const language = localStorage.getItem('language') || 'en';
 
       // Create new user with the unique nickname

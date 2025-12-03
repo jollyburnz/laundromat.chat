@@ -9,7 +9,7 @@ import MessageList from '@/components/chat/MessageList';
 import MessageInput from '@/components/chat/MessageInput';
 import LanguageToggle from '@/components/ui/LanguageToggle';
 import ReportIssueButton from '@/components/chat/ReportIssueButton';
-import { generateDeviceId } from '@/lib/utils';
+import { getCachedVisitorId } from '@/lib/fingerprint';
 import { requestNotificationPermission, registerServiceWorker } from '@/lib/notifications';
 
 export default function ChatPage() {
@@ -82,7 +82,7 @@ export default function ChatPage() {
       } else {
         // Check for anonymous user
         const storedUserId = localStorage.getItem('user_id');
-        const deviceId = generateDeviceId();
+        // Note: deviceId not needed here as we're checking storedUserId
 
         if (storedUserId) {
           const { data: userData } = await supabase

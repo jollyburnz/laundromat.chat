@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { supabase } from '@/lib/supabase/client';
-import { generateDeviceId } from '@/lib/utils';
+import { getVisitorId, getCachedVisitorId } from '@/lib/fingerprint';
 import NicknameSetup from './NicknameSetup';
 
 export default function AnonymousLogin() {
@@ -20,10 +20,16 @@ export default function AnonymousLogin() {
 
   const checkExistingUser = async () => {
     try {
-      const deviceId = generateDeviceId();
+      const cachedId = getCachedVisitorId();
+      let deviceId = cachedId;
+
+      if (!deviceId) {
+        deviceId = await getVisitorId();
+      }
+
       const { data: existingUser } = await supabase
         .from('users')
-        .select('nickname')
+        .select('nickname, id, role')
         .eq('device_id', deviceId)
         .single();
 
@@ -44,7 +50,7 @@ export default function AnonymousLogin() {
     setError(null);
 
     try {
-      const deviceId = generateDeviceId();
+      const deviceId = await getVisitorId();
       const language = localStorage.getItem('language') || 'en';
 
       // Create new user with the unique nickname
@@ -87,7 +93,7 @@ export default function AnonymousLogin() {
     setError(null);
 
     try {
-      const deviceId = generateDeviceId();
+      const deviceId = await getVisitorId();
       const language = localStorage.getItem('language') || 'en';
 
       // Update existing user's language preference

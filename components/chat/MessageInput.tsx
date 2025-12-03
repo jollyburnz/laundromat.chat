@@ -80,21 +80,32 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
     setUploading(true);
     lastMessageTime.current = now;
 
+    // Store original message for optimistic update
+    const tempMessage = message.trim();
+    const tempImageFile = imageFile;
+
+    // Clear input immediately for better UX
+    setMessage('');
+    setImageFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+
     try {
       let imageUrl: string | null = null;
 
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile);
+      if (tempImageFile) {
+        imageUrl = await uploadImage(tempImageFile);
       }
 
-      const language = detectLanguage(message || '');
+      const language = detectLanguage(tempMessage || '');
 
       const { error } = await supabase
         .from('messages')
         .insert({
           user_id: userId,
           room_id: roomId,
-          text: message.trim() || '',
+          text: tempMessage || '',
           image_url: imageUrl,
           language: language,
           is_staff: isStaff,
@@ -102,14 +113,13 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
 
       if (error) throw error;
 
-      setMessage('');
-      setImageFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+      // Message will appear via real-time subscription
       onMessageSent();
     } catch (error: any) {
       console.error('Error sending message:', error);
+      // Restore message on error
+      setMessage(tempMessage);
+      setImageFile(tempImageFile);
       alert(error.message || t('errors.networkError'));
     } finally {
       setUploading(false);

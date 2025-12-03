@@ -51,8 +51,14 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
 
   useEffect(() => {
     if (!roomId) return;
+    
     fetchMessages();
-    subscribeToMessages();
+    const cleanup = subscribeToMessages();
+    
+    // Properly clean up subscription when roomId changes or component unmounts
+    return () => {
+      cleanup();
+    };
   }, [roomId]);
 
   useEffect(() => {
@@ -99,6 +105,16 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
         async (payload) => {
           const newMessage = payload.new as Message;
           
+          // Check if message already exists to prevent duplicates
+          setMessages(prev => {
+            if (prev.some(m => m.id === newMessage.id)) {
+              return prev; // Message already exists
+            }
+            
+            // Add message temporarily while we fetch user data
+            return [...prev, newMessage];
+          });
+          
           // Fetch user data for the new message
           const { data: userData } = await supabase
             .from('users')
@@ -111,7 +127,10 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
             user: userData || { nickname: 'Unknown', role: 'customer' },
           };
 
-          setMessages(prev => [...prev, messageWithUser]);
+          // Update the message with user data
+          setMessages(prev => prev.map(m => 
+            m.id === newMessage.id ? messageWithUser : m
+          ));
           
           // Show notification for new message
           if (newMessage.user_id !== userId) {
@@ -126,11 +145,18 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
           
           // Fetch translation if needed using the hook
           if (newMessage.language && newMessage.language !== locale) {
-            fetchTranslationForMessage(newMessage);
+            fetchTranslationForMessage(messageWithUser);
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('Subscribed to messages');
+        } else if (status === 'CHANNEL_ERROR') {
+          console.error('Channel error, attempting to resubscribe...');
+          // Optionally implement reconnection logic here
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);

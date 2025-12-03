@@ -24,7 +24,7 @@
     "sendCode": "發送驗證碼",
     "enterCode": "輸入驗證碼",
     "verify": "驗證",
-    "anonymousLogin": "以訪客身份繼續",
+    "anonymousLogin": "快速聊天",
     "enterNickname": "輸入暱稱",
     "nicknamePlaceholder": "選擇一個獨特的暱稱",
     "nicknameRequirements": "3-20 個字符，字母、數字、_ 或 -",

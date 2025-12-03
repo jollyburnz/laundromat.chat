@@ -71,7 +71,7 @@ export function preInitializeFingerprintJS() {
       if (typeof window !== 'undefined') {
         localStorage.setItem('fp_visitor_id', result.visitorId);
       }
-    }).catch((error) => {
+    }).catch((error: unknown) => {
       console.warn('Background fingerprint initialization failed:', error);
     });
   });

@@ -1,0 +1,92 @@
+{
+  "common": {
+    "welcome": "歡迎來到洗衣店",
+    "send": "發送",
+    "enterMessage": "輸入訊息...",
+    "login": "登入",
+    "logout": "登出",
+    "settings": "設定",
+    "language": "語言",
+    "english": "English",
+    "chinese": "中文",
+    "spanish": "Español",
+    "loading": "載入中...",
+    "checking": "檢查中...",
+    "error": "錯誤",
+    "cancel": "取消",
+    "confirm": "確認",
+    "delete": "刪除",
+    "close": "關閉"
+  },
+  "auth": {
+    "phoneLogin": "手機登入",
+    "enterPhone": "輸入您的手機號碼",
+    "sendCode": "發送驗證碼",
+    "enterCode": "輸入驗證碼",
+    "verify": "驗證",
+    "anonymousLogin": "以訪客身份繼續",
+    "enterNickname": "輸入暱稱",
+    "nicknamePlaceholder": "選擇一個獨特的暱稱",
+    "nicknameRequirements": "3-20 個字符，字母、數字、_ 或 -",
+    "nicknameTooShort": "暱稱至少需要 3 個字符",
+    "nicknameTooLong": "暱稱不能超過 20 個字符",
+    "nicknameInvalidChars": "只能使用字母、數字、底線和連字符",
+    "nicknameTaken": "此暱稱已被使用",
+    "nicknameAvailable": "此暱稱可用！",
+    "nicknameCheckError": "檢查暱稱時出錯。請重試。",
+    "creating": "正在創建帳戶...",
+    "continue": "繼續",
+    "createNicknamePrompt": "創建一個獨特的暱稱以開始使用",
+    "welcomeBack": "歡迎回來",
+    "continueAsExisting": "使用您現有的帳戶繼續",
+    "qrCodeLogin": "掃描 QR 碼",
+    "qrCodeInstructions": "用手機相機掃描此 QR 碼以加入聊天",
+    "welcome": "歡迎",
+    "settingUp": "正在設置您的帳戶...",
+    "or": "或"
+  },
+  "chat": {
+    "general": "一般聊天",
+    "machineIssues": "機器問題",
+    "lostFound": "失物招領",
+    "announcements": "公告",
+    "support": "支援",
+    "selectRoom": "選擇房間",
+    "noMessages": "尚無訊息",
+    "staff": "工作人員",
+    "translate": "翻譯",
+    "original": "原文",
+    "reportIssue": "回報問題",
+    "uploadImage": "上傳圖片",
+    "messageDeleted": "訊息已刪除",
+    "you": "您"
+  },
+  "rooms": {
+    "general": "一般聊天",
+    "machineIssues": "機器問題",
+    "lostFound": "失物招領",
+    "announcements": "公告",
+    "support": "支援（僅限工作人員）"
+  },
+  "moderation": {
+    "deleteMessage": "刪除訊息",
+    "muteUser": "靜音用戶",
+    "banUser": "封鎖用戶",
+    "confirmDelete": "您確定要刪除此訊息嗎？",
+    "staffOnly": "僅限工作人員"
+  },
+  "errors": {
+    "networkError": "網路錯誤。請重試。",
+    "authError": "認證錯誤。請重新登入。",
+    "messageTooLong": "訊息太長",
+    "rateLimit": "您發送訊息太快。請稍候。",
+    "uploadFailed": "圖片上傳失敗",
+    "invalidImage": "無效的圖片格式"
+  },
+  "notifications": {
+    "newMessage": "新訊息",
+    "newMessageInRoom": "{room} 有新訊息",
+    "staffAnnouncement": "工作人員公告"
+  }
+}
+

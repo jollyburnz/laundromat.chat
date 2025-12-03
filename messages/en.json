@@ -1,0 +1,92 @@
+{
+  "common": {
+    "welcome": "Welcome to the laundromat",
+    "send": "Send",
+    "enterMessage": "Type a message...",
+    "login": "Login",
+    "logout": "Logout",
+    "settings": "Settings",
+    "language": "Language",
+    "english": "English",
+    "chinese": "中文",
+    "spanish": "Español",
+    "loading": "Loading...",
+    "checking": "Checking...",
+    "error": "Error",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "close": "Close"
+  },
+  "auth": {
+    "phoneLogin": "Phone Login",
+    "enterPhone": "Enter your phone number",
+    "sendCode": "Send Code",
+    "enterCode": "Enter verification code",
+    "verify": "Verify",
+    "anonymousLogin": "Continue as Guest",
+    "enterNickname": "Enter a nickname",
+    "nicknamePlaceholder": "Choose a unique nickname",
+    "nicknameRequirements": "3-20 characters, letters, numbers, _ or -",
+    "nicknameTooShort": "Nickname must be at least 3 characters",
+    "nicknameTooLong": "Nickname must be no more than 20 characters",
+    "nicknameInvalidChars": "Only letters, numbers, underscores, and hyphens allowed",
+    "nicknameTaken": "This nickname is already taken",
+    "nicknameAvailable": "This nickname is available!",
+    "nicknameCheckError": "Error checking nickname. Please try again.",
+    "creating": "Creating account...",
+    "continue": "Continue",
+    "createNicknamePrompt": "Create a unique nickname to get started",
+    "welcomeBack": "Welcome back",
+    "continueAsExisting": "Continue with your existing account",
+    "qrCodeLogin": "Scan QR Code",
+    "qrCodeInstructions": "Scan this QR code with your phone camera to join the chat",
+    "welcome": "Welcome",
+    "settingUp": "Setting up your account...",
+    "or": "or"
+  },
+  "chat": {
+    "general": "General Chat",
+    "machineIssues": "Machine Issues",
+    "lostFound": "Lost & Found",
+    "announcements": "Announcements",
+    "support": "Support",
+    "selectRoom": "Select a room",
+    "noMessages": "No messages yet",
+    "staff": "Staff",
+    "translate": "Translate",
+    "original": "Original",
+    "reportIssue": "Report Issue",
+    "uploadImage": "Upload Image",
+    "messageDeleted": "Message deleted",
+    "you": "You"
+  },
+  "rooms": {
+    "general": "General Chat",
+    "machineIssues": "Machine Issues",
+    "lostFound": "Lost & Found",
+    "announcements": "Announcements",
+    "support": "Support (Staff Only)"
+  },
+  "moderation": {
+    "deleteMessage": "Delete Message",
+    "muteUser": "Mute User",
+    "banUser": "Ban User",
+    "confirmDelete": "Are you sure you want to delete this message?",
+    "staffOnly": "Staff Only"
+  },
+  "errors": {
+    "networkError": "Network error. Please try again.",
+    "authError": "Authentication error. Please login again.",
+    "messageTooLong": "Message is too long",
+    "rateLimit": "You're sending messages too quickly. Please wait.",
+    "uploadFailed": "Image upload failed",
+    "invalidImage": "Invalid image format"
+  },
+  "notifications": {
+    "newMessage": "New message",
+    "newMessageInRoom": "New message in {room}",
+    "staffAnnouncement": "Staff Announcement"
+  }
+}
+

@@ -1,0 +1,92 @@
+{
+  "common": {
+    "welcome": "Bienvenido a la lavandería",
+    "send": "Enviar",
+    "enterMessage": "Escribe un mensaje...",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "settings": "Configuración",
+    "language": "Idioma",
+    "english": "Inglés",
+    "chinese": "中文",
+    "spanish": "Español",
+    "loading": "Cargando...",
+    "checking": "Verificando...",
+    "error": "Error",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "close": "Cerrar"
+  },
+  "auth": {
+    "phoneLogin": "Iniciar sesión con teléfono",
+    "enterPhone": "Ingresa tu número de teléfono",
+    "sendCode": "Enviar código",
+    "enterCode": "Ingresa el código de verificación",
+    "verify": "Verificar",
+    "anonymousLogin": "Continuar como invitado",
+    "enterNickname": "Ingresa un apodo",
+    "nicknamePlaceholder": "Elige un apodo único",
+    "nicknameRequirements": "3-20 caracteres, letras, números, _ o -",
+    "nicknameTooShort": "El apodo debe tener al menos 3 caracteres",
+    "nicknameTooLong": "El apodo no debe tener más de 20 caracteres",
+    "nicknameInvalidChars": "Solo se permiten letras, números, guiones bajos y guiones",
+    "nicknameTaken": "Este apodo ya está en uso",
+    "nicknameAvailable": "¡Este apodo está disponible!",
+    "nicknameCheckError": "Error al verificar el apodo. Por favor, inténtalo de nuevo.",
+    "creating": "Creando cuenta...",
+    "continue": "Continuar",
+    "createNicknamePrompt": "Crea un apodo único para comenzar",
+    "welcomeBack": "Bienvenido de nuevo",
+    "continueAsExisting": "Continuar con tu cuenta existente",
+    "qrCodeLogin": "Escanear código QR",
+    "qrCodeInstructions": "Escanea este código QR con la cámara de tu teléfono para unirte al chat",
+    "welcome": "Bienvenido",
+    "settingUp": "Configurando tu cuenta...",
+    "or": "o"
+  },
+  "chat": {
+    "general": "Chat General",
+    "machineIssues": "Problemas con Máquinas",
+    "lostFound": "Objetos Perdidos",
+    "announcements": "Anuncios",
+    "support": "Soporte",
+    "selectRoom": "Selecciona una sala",
+    "noMessages": "Aún no hay mensajes",
+    "staff": "Personal",
+    "translate": "Traducir",
+    "original": "Original",
+    "reportIssue": "Reportar Problema",
+    "uploadImage": "Subir Imagen",
+    "messageDeleted": "Mensaje eliminado",
+    "you": "Tú"
+  },
+  "rooms": {
+    "general": "Chat General",
+    "machineIssues": "Problemas con Máquinas",
+    "lostFound": "Objetos Perdidos",
+    "announcements": "Anuncios",
+    "support": "Soporte (Solo Personal)"
+  },
+  "moderation": {
+    "deleteMessage": "Eliminar Mensaje",
+    "muteUser": "Silenciar Usuario",
+    "banUser": "Bloquear Usuario",
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este mensaje?",
+    "staffOnly": "Solo Personal"
+  },
+  "errors": {
+    "networkError": "Error de red. Por favor, inténtalo de nuevo.",
+    "authError": "Error de autenticación. Por favor, inicia sesión de nuevo.",
+    "messageTooLong": "El mensaje es demasiado largo",
+    "rateLimit": "Estás enviando mensajes demasiado rápido. Por favor, espera.",
+    "uploadFailed": "Error al subir la imagen",
+    "invalidImage": "Formato de imagen inválido"
+  },
+  "notifications": {
+    "newMessage": "Nuevo mensaje",
+    "newMessageInRoom": "Nuevo mensaje en {room}",
+    "staffAnnouncement": "Anuncio del Personal"
+  }
+}
+

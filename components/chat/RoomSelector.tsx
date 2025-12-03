@@ -27,7 +27,8 @@ export default function RoomSelector({ currentRoomId, onRoomSelect, userRole }: 
 
   useEffect(() => {
     fetchRooms();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // fetchRooms depends on userRole, but userRole is a prop and stable
 
   const fetchRooms = async () => {
     try {

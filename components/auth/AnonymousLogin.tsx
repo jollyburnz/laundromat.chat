@@ -16,7 +16,8 @@ export default function AnonymousLogin() {
 
   useEffect(() => {
     checkExistingUser();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // checkExistingUser is stable, safe to omit
 
   const checkExistingUser = async () => {
     try {

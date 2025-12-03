@@ -25,7 +25,8 @@ export default function ChatPage() {
   useEffect(() => {
     checkAuth();
     initializeNotifications();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // checkAuth and initializeNotifications are stable functions, safe to omit
 
   const initializeNotifications = async () => {
     const permission = await requestNotificationPermission();

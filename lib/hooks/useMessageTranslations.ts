@@ -198,8 +198,10 @@ export function useMessageTranslations({
 
     return () => {
       // Cleanup: abort any in-flight fetches
-      abortControllersRef.current.forEach(controller => controller.abort());
-      abortControllersRef.current.clear();
+      // Capture the current value to avoid stale closure
+      const controllers = abortControllersRef.current;
+      controllers.forEach(controller => controller.abort());
+      controllers.clear();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, locale]); // fetchTranslations is stable (empty deps), so we don't need it in deps

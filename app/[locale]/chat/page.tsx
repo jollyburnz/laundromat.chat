@@ -151,8 +151,12 @@ export default function ChatPage() {
 
   return (
     <div className="h-screen flex flex-col">
-      <header className="bg-laundry-blue text-white border-b-2 border-laundry-blue-dark px-4 py-3 flex items-center justify-between shadow-md">
-        <h1 className="text-xl font-bold text-white">Laundromat Chat</h1>
+      <header className="bg-white text-laundry-blue border-b-2 border-laundry-blue px-4 py-3 flex items-center justify-between shadow-md">
+        <img 
+          src="/laundromat.chat.svg" 
+          alt="Laundromat Chat" 
+          className="h-8 w-auto"
+        />
         <div className="flex items-center gap-4">
           <ReportIssueButton
             userId={userId}
@@ -163,7 +167,7 @@ export default function ChatPage() {
           <LanguageToggle inHeader={true} />
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm border-2 border-white rounded-lg hover:bg-white hover:text-laundry-blue font-medium transition-colors text-white"
+            className="px-4 py-2 text-sm border-2 border-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white font-medium transition-colors text-laundry-blue"
           >
             {t('common.logout')}
           </button>

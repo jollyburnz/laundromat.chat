@@ -37,9 +37,9 @@ export default function LanguageToggle({ inHeader = false }: LanguageToggleProps
       <select
         value={locale}
         onChange={handleLanguageChange}
-        className={`${baseClasses} border-2 border-white bg-laundry-blue text-white hover:bg-white hover:text-laundry-blue focus:ring-white pr-8`}
+        className={`${baseClasses} border-2 border-laundry-blue bg-white text-laundry-blue hover:bg-laundry-blue hover:text-white focus:ring-laundry-blue pr-8`}
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230066cc' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'right 0.5rem center',
           backgroundSize: '1em 1em',
@@ -47,7 +47,7 @@ export default function LanguageToggle({ inHeader = false }: LanguageToggleProps
         aria-label={t('language')}
       >
         {languages.map((lang) => (
-          <option key={lang.code} value={lang.code} style={{ backgroundColor: '#0066cc', color: 'white' }}>
+          <option key={lang.code} value={lang.code} style={{ backgroundColor: '#ffffff', color: '#0066cc' }}>
             {lang.label}
           </option>
         ))}

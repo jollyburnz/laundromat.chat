@@ -101,7 +101,7 @@ export default function ReportIssueButton({
     return (
       <button
         onClick={() => setShowModal(true)}
-        className="px-4 py-2 bg-transparent border-2 border-white text-white rounded-lg hover:bg-white hover:text-laundry-blue text-sm font-medium transition-colors"
+        className="px-4 py-2 bg-transparent border-2 border-laundry-blue text-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white text-sm font-medium transition-colors"
       >
         {t('reportIssue')}
       </button>

@@ -16,11 +16,17 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-laundry-blue-light flex items-center justify-center p-4 safe-top safe-bottom">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 lg:p-8 border-2 border-laundry-blue">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-xl lg:text-2xl font-bold text-laundry-blue">{t('common.welcome')}</h1>
-          <LanguageToggle />
+        <div>
+          <h1 className="text-xl lg:text-2xl font-bold text-black">{t('common.welcome')}</h1>
+          <img 
+            src="/laundromat.chat.svg" 
+            alt="Laundromat Chat" 
+            // className="h-8 w-auto hidden lg:block"
+          />
         </div>
-
+        <div className="flex justify-end mt-4 mb-4">
+            <LanguageToggle />
+        </div>
         <div className="mb-6">
           <div className="flex border-b-2 border-laundry-blue-light">
             <button

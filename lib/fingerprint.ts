@@ -29,7 +29,7 @@ export async function getVisitorId(): Promise<string> {
 
   try {
     const fp = await getFingerprintJS();
-    const result = await fp.get();
+    const result: { visitorId: string } = await fp.get();
     const visitorId = result.visitorId;
 
     // Cache in memory and localStorage
@@ -66,7 +66,7 @@ export function preInitializeFingerprintJS() {
   // Start loading FingerprintJS immediately
   getFingerprintJS().then((fp) => {
     // Optionally get the visitor ID in the background
-    fp.get().then((result) => {
+    fp.get().then((result: { visitorId: string }) => {
       cachedVisitorId = result.visitorId;
       if (typeof window !== 'undefined') {
         localStorage.setItem('fp_visitor_id', result.visitorId);

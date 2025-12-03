@@ -63,17 +63,18 @@ export default function PhoneLogin() {
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="w-full px-4 py-2 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black"
+            className="w-full px-4 py-3 lg:py-2 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-base lg:text-sm min-h-[44px]"
             placeholder="123456"
             maxLength={6}
             required
+            inputMode="numeric"
           />
         </div>
         {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-laundry-blue text-white py-2 rounded-lg hover:bg-laundry-blue-dark disabled:opacity-50 font-medium"
+          className="w-full bg-laundry-blue text-white py-3 lg:py-2 rounded-lg hover:bg-laundry-blue-dark active:bg-laundry-blue-dark disabled:opacity-50 font-medium min-h-[44px] text-base lg:text-sm"
         >
           {loading ? '...' : t('verify')}
         </button>
@@ -91,16 +92,17 @@ export default function PhoneLogin() {
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full px-4 py-2 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black"
+            className="w-full px-4 py-3 lg:py-2 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-base lg:text-sm min-h-[44px]"
             placeholder="+1234567890"
             required
+            inputMode="tel"
           />
       </div>
       {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-laundry-blue text-white py-2 rounded-lg hover:bg-laundry-blue-dark disabled:opacity-50 font-medium"
+        className="w-full bg-laundry-blue text-white py-3 lg:py-2 rounded-lg hover:bg-laundry-blue-dark active:bg-laundry-blue-dark disabled:opacity-50 font-medium min-h-[44px] text-base lg:text-sm"
       >
         {loading ? '...' : t('sendCode')}
       </button>

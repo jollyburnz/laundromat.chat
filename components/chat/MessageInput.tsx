@@ -127,23 +127,23 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
   };
 
   return (
-    <form onSubmit={handleSend} className="border-t-2 border-laundry-blue-light p-4 bg-white">
+    <form onSubmit={handleSend} className="border-t-2 border-laundry-blue-light px-4 py-3 lg:px-4 lg:py-4 bg-white safe-bottom">
       {imageFile && (
-        <div className="mb-2 flex items-center gap-2">
-          <span className="text-sm text-black">{imageFile.name}</span>
+        <div className="mb-3 flex items-center gap-2">
+          <span className="text-sm lg:text-sm text-black flex-1 truncate">{imageFile.name}</span>
           <button
             type="button"
             onClick={() => {
               setImageFile(null);
               if (fileInputRef.current) fileInputRef.current.value = '';
             }}
-            className="text-laundry-blue text-sm hover:text-laundry-blue-dark font-medium"
+            className="text-laundry-blue text-lg lg:text-sm hover:text-laundry-blue-dark font-medium min-w-[44px] min-h-[44px] flex items-center justify-center"
           >
             ×
           </button>
         </div>
       )}
-      <div className="flex gap-2">
+      <div className="flex gap-2 lg:gap-2">
         <input
           type="file"
           ref={fileInputRef}
@@ -154,7 +154,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
         />
         <label
           htmlFor="image-upload"
-          className="px-4 py-2 border-2 border-laundry-blue-light rounded-lg cursor-pointer hover:bg-laundry-blue-light text-black"
+          className="px-4 py-3 lg:px-4 lg:py-2 border-2 border-laundry-blue-light rounded-lg cursor-pointer hover:bg-laundry-blue-light active:bg-laundry-blue-light text-black min-w-[44px] min-h-[44px] flex items-center justify-center text-xl lg:text-base"
         >
           📷
         </label>
@@ -163,13 +163,14 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={t('common.enterMessage')}
-          className="flex-1 px-4 py-2 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black"
+          className="flex-1 px-4 py-3 lg:px-4 lg:py-2 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-base lg:text-sm min-h-[44px]"
           maxLength={MESSAGE_LIMIT}
+          autoComplete="off"
         />
         <button
           type="submit"
           disabled={uploading || (!message.trim() && !imageFile)}
-          className="px-6 py-2 bg-laundry-blue text-white rounded-lg hover:bg-laundry-blue-dark disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+          className="px-6 py-3 lg:px-6 lg:py-2 bg-laundry-blue text-white rounded-lg hover:bg-laundry-blue-dark active:bg-laundry-blue-dark disabled:opacity-50 disabled:cursor-not-allowed font-medium text-base lg:text-sm min-w-[44px] min-h-[44px]"
         >
           {uploading ? '...' : t('common.send')}
         </button>

@@ -8,6 +8,18 @@ export const metadata: Metadata = {
   title: "Laundromat Chat",
   description: "Hyperlocal chat for your laundromat",
   manifest: "/manifest.json",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
+  themeColor: "#0066cc",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Laundromat Chat",
+  },
 };
 
 export default function RootLayout({

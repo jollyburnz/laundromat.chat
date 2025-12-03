@@ -74,20 +74,20 @@ export default function ReportIssueButton({
             value={issueText}
             onChange={(e) => setIssueText(e.target.value)}
             placeholder="Describe the issue..."
-            className="w-full px-4 py-2 border-2 border-laundry-blue-light rounded-lg mb-4 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black"
+            className="w-full px-4 py-3 lg:py-2 border-2 border-laundry-blue-light rounded-lg mb-4 min-h-[120px] lg:min-h-[100px] focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-base lg:text-sm"
             maxLength={500}
           />
           <div className="flex gap-2">
             <button
               onClick={() => setShowModal(false)}
-              className="flex-1 px-4 py-2 border-2 border-laundry-blue-light rounded-lg hover:bg-laundry-blue-light text-black font-medium"
+              className="flex-1 px-4 py-3 lg:py-2 border-2 border-laundry-blue-light rounded-lg hover:bg-laundry-blue-light active:bg-laundry-blue-light text-black font-medium min-h-[44px]"
             >
               Cancel
             </button>
             <button
               onClick={handleReport}
               disabled={submitting || !issueText.trim()}
-              className="flex-1 px-4 py-2 bg-laundry-blue text-white rounded-lg hover:bg-laundry-blue-dark disabled:opacity-50 font-medium"
+              className="flex-1 px-4 py-3 lg:py-2 bg-laundry-blue text-white rounded-lg hover:bg-laundry-blue-dark active:bg-laundry-blue-dark disabled:opacity-50 font-medium min-h-[44px]"
             >
               {submitting ? '...' : 'Report'}
             </button>
@@ -101,7 +101,7 @@ export default function ReportIssueButton({
     return (
       <button
         onClick={() => setShowModal(true)}
-        className="px-4 py-2 bg-transparent border-2 border-laundry-blue text-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white text-sm font-medium transition-colors"
+        className="px-4 py-2.5 lg:py-2 bg-transparent border-2 border-laundry-blue text-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white active:bg-laundry-blue active:text-white text-sm font-medium transition-colors min-w-[44px] min-h-[44px]"
       >
         {t('reportIssue')}
       </button>
@@ -111,7 +111,7 @@ export default function ReportIssueButton({
   return (
     <button
       onClick={() => setShowModal(true)}
-      className="px-4 py-2 bg-white border-2 border-laundry-blue text-laundry-blue rounded-lg hover:bg-laundry-blue-light text-sm font-medium"
+      className="px-4 py-3 lg:py-2 bg-white border-2 border-laundry-blue text-laundry-blue rounded-lg hover:bg-laundry-blue-light active:bg-laundry-blue-light text-sm font-medium min-w-[44px] min-h-[44px]"
     >
       {t('reportIssue')}
     </button>

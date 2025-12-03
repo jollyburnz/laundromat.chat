@@ -149,15 +149,28 @@ export default function ChatPage() {
     return null;
   }
 
+  const handleRoomSelect = (roomId: string) => {
+    setCurrentRoomId(roomId);
+  };
+
   return (
-    <div className="h-screen flex flex-col">
-      <header className="bg-white text-laundry-blue border-b-2 border-laundry-blue px-4 py-3 flex items-center justify-between shadow-md">
-        <img 
-          src="/laundromat.chat.svg" 
-          alt="Laundromat Chat" 
-          className="h-8 w-auto"
-        />
-        <div className="flex items-center gap-4">
+    <div className="h-screen flex flex-col overflow-hidden">
+      <header className="bg-white text-laundry-blue border-b-2 border-laundry-blue px-4 lg:px-4 py-2 lg:py-3 flex items-center justify-between shadow-md safe-top">
+        <div className="flex items-center gap-2 lg:gap-4">
+          {/* Mobile logo */}
+          <img 
+            src="/laundromat.chat.mobile.svg" 
+            alt="Laundromat Chat" 
+            className="h-10 w-auto lg:hidden"
+          />
+          {/* Desktop logo */}
+          <img 
+            src="/laundromat.chat.svg" 
+            alt="Laundromat Chat" 
+            className="h-8 w-auto hidden lg:block"
+          />
+        </div>
+        <div className="flex items-center gap-2 lg:gap-4">
           <ReportIssueButton
             userId={userId}
             isStaff={userRole === 'staff' || userRole === 'admin'}
@@ -167,20 +180,22 @@ export default function ChatPage() {
           <LanguageToggle inHeader={true} />
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm border-2 border-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white font-medium transition-colors text-laundry-blue"
+            className="px-3 py-2 lg:px-4 lg:py-2 text-sm border-2 border-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white font-medium transition-colors text-laundry-blue min-w-[44px] min-h-[44px]"
           >
-            {t('common.logout')}
+            <span className="hidden sm:inline">{t('common.logout')}</span>
+            <span className="sm:hidden">⏻</span>
           </button>
         </div>
       </header>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Room Selector - Always visible, icon-only on mobile */}
         <RoomSelector
           currentRoomId={currentRoomId}
-          onRoomSelect={setCurrentRoomId}
+          onRoomSelect={handleRoomSelect}
           userRole={userRole}
         />
-        <div className="flex-1 flex flex-col bg-laundry-blue-light">
+        <div className="flex-1 flex flex-col bg-laundry-blue-light min-w-0">
           <MessageList
             roomId={currentRoomId}
             userId={userId}

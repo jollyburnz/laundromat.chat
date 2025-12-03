@@ -146,7 +146,7 @@ export default function AnonymousLogin() {
       <button
         onClick={handleExistingUserLogin}
         disabled={loading}
-        className="w-full bg-laundry-blue text-white py-2 rounded-lg hover:bg-laundry-blue-dark disabled:opacity-50 font-medium"
+        className="w-full bg-laundry-blue text-white py-3 lg:py-2 rounded-lg hover:bg-laundry-blue-dark active:bg-laundry-blue-dark disabled:opacity-50 font-medium min-h-[44px] text-base lg:text-sm"
       >
         {loading ? '...' : t('anonymousLogin')}
       </button>

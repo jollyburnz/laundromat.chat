@@ -14,10 +14,10 @@ export default function LoginPage() {
   const [method, setMethod] = useState<LoginMethod>('anonymous');
 
   return (
-    <div className="min-h-screen bg-laundry-blue-light flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 border-2 border-laundry-blue">
+    <div className="min-h-screen bg-laundry-blue-light flex items-center justify-center p-4 safe-top safe-bottom">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 lg:p-8 border-2 border-laundry-blue">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-laundry-blue">{t('common.welcome')}</h1>
+          <h1 className="text-xl lg:text-2xl font-bold text-laundry-blue">{t('common.welcome')}</h1>
           <LanguageToggle />
         </div>
 
@@ -25,30 +25,30 @@ export default function LoginPage() {
           <div className="flex border-b-2 border-laundry-blue-light">
             <button
               onClick={() => setMethod('phone')}
-              className={`flex-1 py-2 px-4 text-center ${
+              className={`flex-1 py-3 lg:py-2 px-2 lg:px-4 text-center min-h-[44px] text-sm lg:text-base ${
                 method === 'phone'
                   ? 'border-b-2 border-laundry-blue text-laundry-blue font-medium'
-                  : 'text-black hover:text-laundry-blue'
+                  : 'text-black hover:text-laundry-blue active:text-laundry-blue'
               }`}
             >
               {t('auth.phoneLogin')}
             </button>
             <button
               onClick={() => setMethod('qr')}
-              className={`flex-1 py-2 px-4 text-center ${
+              className={`flex-1 py-3 lg:py-2 px-2 lg:px-4 text-center min-h-[44px] text-sm lg:text-base ${
                 method === 'qr'
                   ? 'border-b-2 border-laundry-blue text-laundry-blue font-medium'
-                  : 'text-black hover:text-laundry-blue'
+                  : 'text-black hover:text-laundry-blue active:text-laundry-blue'
               }`}
             >
               {t('auth.qrCodeLogin')}
             </button>
             <button
               onClick={() => setMethod('anonymous')}
-              className={`flex-1 py-2 px-4 text-center ${
+              className={`flex-1 py-3 lg:py-2 px-2 lg:px-4 text-center min-h-[44px] text-sm lg:text-base ${
                 method === 'anonymous'
                   ? 'border-b-2 border-laundry-blue text-laundry-blue font-medium'
-                  : 'text-black hover:text-laundry-blue'
+                  : 'text-black hover:text-laundry-blue active:text-laundry-blue'
               }`}
             >
               {t('auth.anonymousLogin')}

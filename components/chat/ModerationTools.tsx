@@ -50,19 +50,26 @@ export default function ModerationTools({
     <div className="relative">
       <button
         onClick={() => setShowMenu(!showMenu)}
-        className="text-black opacity-60 hover:opacity-100 text-sm"
+        className="text-black opacity-60 hover:opacity-100 active:opacity-100 text-lg lg:text-sm min-w-[44px] min-h-[44px] lg:min-h-0 flex items-center justify-center"
+        aria-label="Moderation menu"
       >
         ⋮
       </button>
       {showMenu && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border-2 border-laundry-blue-light rounded-lg shadow-lg z-10">
-          <button
-            onClick={handleDelete}
-            className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-medium"
-          >
-            {confirming ? t('confirmDelete') : t('deleteMessage')}
-          </button>
-        </div>
+        <>
+          <div
+            className="fixed inset-0 z-10"
+            onClick={() => setShowMenu(false)}
+          />
+          <div className="absolute right-0 mt-2 w-48 bg-white border-2 border-laundry-blue-light rounded-lg shadow-lg z-20">
+            <button
+              onClick={handleDelete}
+              className="w-full text-left px-4 py-3 lg:py-2 text-red-600 hover:bg-red-50 active:bg-red-50 text-sm font-medium min-h-[44px]"
+            >
+              {confirming ? t('confirmDelete') : t('deleteMessage')}
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

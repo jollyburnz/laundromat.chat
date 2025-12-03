@@ -29,7 +29,7 @@ export default function LoginPage() {
         </div>
         <div className="mb-6">
           <div className="flex border-b-2 border-laundry-blue-light">
-            <button
+            {/* <button
               onClick={() => setMethod('phone')}
               className={`flex-1 py-3 lg:py-2 px-2 lg:px-4 text-center min-h-[44px] text-sm lg:text-base ${
                 method === 'phone'
@@ -38,7 +38,7 @@ export default function LoginPage() {
               }`}
             >
               {t('auth.phoneLogin')}
-            </button>
+            </button> */}
             <button
               onClick={() => setMethod('qr')}
               className={`flex-1 py-3 lg:py-2 px-2 lg:px-4 text-center min-h-[44px] text-sm lg:text-base ${

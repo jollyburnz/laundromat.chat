@@ -9,8 +9,13 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 /**
  * Translate text using Azure Translator API
  * Free tier: 2 million characters per month
+ * Supports all language pairs: en↔zh, en↔es, zh↔es
  */
-async function translateWithAzure(text: string, targetLanguage: string): Promise<string> {
+async function translateWithAzure(
+  text: string,
+  sourceLanguage: string,
+  targetLanguage: string
+): Promise<string> {
   const endpoint = process.env.AZURE_TRANSLATOR_ENDPOINT || 'https://api.cognitive.microsofttranslator.com';
   const subscriptionKey = process.env.AZURE_TRANSLATOR_KEY!;
   const region = process.env.AZURE_TRANSLATOR_REGION || 'global';
@@ -22,10 +27,12 @@ async function translateWithAzure(text: string, targetLanguage: string): Promise
     'en': 'en'        // English
   };
   
+  const azureSourceLang = azureLangMap[sourceLanguage] || sourceLanguage;
   const azureTargetLang = azureLangMap[targetLanguage] || targetLanguage;
   
+  // Specify both source and target languages for accurate translation
   const response = await fetch(
-    `${endpoint}/translate?api-version=3.0&to=${azureTargetLang}`,
+    `${endpoint}/translate?api-version=3.0&from=${azureSourceLang}&to=${azureTargetLang}`,
     {
       method: 'POST',
       headers: {
@@ -58,9 +65,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { text, targetLanguage, messageId } = await request.json();
+    const { text, sourceLanguage, targetLanguage, messageId } = await request.json();
 
-    if (!text || !targetLanguage || !messageId) {
+    if (!text || !sourceLanguage || !targetLanguage || !messageId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -81,8 +88,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Translate using Azure Translator
-    const translatedText = await translateWithAzure(text, targetLanguage);
+    // Translate using Azure Translator with both source and target languages
+    const translatedText = await translateWithAzure(text, sourceLanguage, targetLanguage);
 
     // Store translation in database
     await supabase

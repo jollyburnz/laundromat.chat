@@ -53,12 +53,13 @@ export function useMessageTranslations({
         return;
       }
 
-      // Fetch from API if not cached
+      // Fetch from API if not cached (pass source language for accurate translation)
       const response = await fetch('/api/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: message.text,
+          sourceLanguage: message.language,
           targetLanguage: locale,
           messageId: message.id,
         }),
@@ -136,6 +137,7 @@ export function useMessageTranslations({
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               text: msg.text,
+              sourceLanguage: msg.language,
               targetLanguage: targetLang,
               messageId: msg.id,
             }),

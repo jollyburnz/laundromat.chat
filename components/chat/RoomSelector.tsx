@@ -8,6 +8,7 @@ interface Room {
   id: string;
   name: string;
   name_en: string | null;
+  name_es: string | null;
   name_zh: string | null;
   type: string;
 }

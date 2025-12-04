@@ -49,9 +49,12 @@ AZURE_TRANSLATOR_KEY=your_azure_translator_key
 AZURE_TRANSLATOR_REGION=global
 AZURE_TRANSLATOR_ENDPOINT=https://api.cognitive.microsofttranslator.com
 NEXT_PUBLIC_ENABLE_TRANSLATIONS=true
+CRON_SECRET=your_random_secret_string_here
 ```
 
 **Translation Feature**: Set `NEXT_PUBLIC_ENABLE_TRANSLATIONS=false` to disable auto-translation. When disabled, messages display in their original language only.
+
+**Weekly Purge**: The `CRON_SECRET` is required for the automatic weekly purge feature. Generate a random string (e.g., `openssl rand -hex 32`) and add it to your environment variables. The purge runs automatically every Sunday at 3 AM UTC to delete messages older than 7 days.
 
 ### 4. Run Development Server
 
@@ -61,14 +64,32 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Data Management
+
+### Weekly Purge
+
+The app automatically purges old data every week to keep the database minimal:
+
+- **Schedule**: Every Sunday at 3 AM UTC
+- **What gets deleted**:
+  - Messages older than 7 days
+  - Associated image files in storage
+  - Message translations (cascades with messages)
+- **What's preserved**:
+  - User accounts (for quick re-login)
+  - System rooms
+  - Recent messages (last 7 days)
+
+The purge runs automatically via Vercel Cron. Make sure to set the `CRON_SECRET` environment variable.
+
 ## Deployment
 
 ### Deploy to Vercel
 
 1. Push your code to GitHub
 2. Import the repository in Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy
+3. Add environment variables in Vercel dashboard (including `CRON_SECRET`)
+4. Deploy - the cron job will be automatically configured from `vercel.json`
 
 ### Custom Domain
 

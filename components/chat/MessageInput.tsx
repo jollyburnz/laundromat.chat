@@ -193,7 +193,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
             message.trim() || imageFile
               ? 'bg-laundry-blue text-white scale-105 shadow-xl'
               : 'bg-gray-300 text-gray-600 scale-95'
-          } ${isPressed ? 'bg-laundry-blue-dark text-gray-300' : ''} hover:bg-laundry-blue-dark hover:text-gray-300 active:bg-laundry-blue-dark disabled:opacity-50 disabled:cursor-not-allowed`}
+          } ${isPressed ? 'bg-laundry-blue-dark text-gray-300' : ''} lg:hover:bg-laundry-blue-dark lg:hover:text-gray-300 active:bg-laundry-blue-dark disabled:opacity-50 disabled:cursor-not-allowed`}
           title={t('common.send')}
         >
           {uploading 

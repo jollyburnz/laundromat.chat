@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { supabase } from '@/lib/supabase/client';
 import { getVisitorId, getCachedVisitorId } from '@/lib/fingerprint';
 import NicknameSetup from './NicknameSetup';
@@ -9,6 +9,7 @@ import NicknameSetup from './NicknameSetup';
 export default function AnonymousLogin() {
   const t = useTranslations('auth');
   const tCommon = useTranslations('common');
+  const locale = useLocale();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
@@ -82,7 +83,7 @@ export default function AnonymousLogin() {
       localStorage.setItem('user_nickname', newUser.nickname);
       localStorage.setItem('user_role', newUser.role);
 
-      window.location.href = '/en/chat';
+      window.location.href = `/${locale}/chat`;
     } catch (err: any) {
       setError(err.message || t('nicknameCheckError'));
       setLoading(false);
@@ -112,7 +113,7 @@ export default function AnonymousLogin() {
       localStorage.setItem('user_nickname', updatedUser.nickname);
       localStorage.setItem('user_role', updatedUser.role);
 
-      window.location.href = '/en/chat';
+      window.location.href = `/${locale}/chat`;
     } catch (err: any) {
       setError(err.message);
       setLoading(false);

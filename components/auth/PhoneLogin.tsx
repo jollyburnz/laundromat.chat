@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { supabase } from '@/lib/supabase/client';
 
 export default function PhoneLogin() {
   const t = useTranslations('auth');
+  const locale = useLocale();
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [step, setStep] = useState<'phone' | 'code'>('phone');
@@ -44,7 +45,7 @@ export default function PhoneLogin() {
       });
 
       if (error) throw error;
-      window.location.href = '/en/chat';
+      window.location.href = `/${locale}/chat`;
     } catch (err: any) {
       setError(err.message);
     } finally {

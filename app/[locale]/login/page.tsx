@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [method, setMethod] = useState<LoginMethod>('anonymous');
 
   return (
-    <div className="min-h-screen bg-laundry-blue-light flex items-center justify-center p-4 safe-top safe-bottom">
+    <div className="h-screen-dynamic bg-laundry-blue-light flex items-center justify-center p-4 safe-top safe-bottom">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 lg:p-8 border-2 border-laundry-blue">
         <div>
           <h1 className="text-xl lg:text-2xl font-bold text-black">{t('common.welcome')}</h1>

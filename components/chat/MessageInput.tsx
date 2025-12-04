@@ -18,6 +18,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
   const [message, setMessage] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastMessageTime = useRef<number>(0);
   const MESSAGE_LIMIT = 500;
@@ -183,11 +184,16 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
         <button
           type="submit"
           disabled={uploading || (!message.trim() && !imageFile)}
+          onTouchStart={() => setIsPressed(true)}
+          onTouchEnd={() => {
+            // Small delay to ensure active state is visible before removing
+            setTimeout(() => setIsPressed(false), 150);
+          }}
           className={`absolute right-2 top-1/2 -translate-y-1/2 px-2 py-2 lg:px-3 lg:py-1.5 rounded-full shadow-lg font-medium text-base lg:text-xs min-w-[36px] min-h-[36px] lg:min-w-auto lg:min-h-[36px] transition-all duration-200 ${
             message.trim() || imageFile
               ? 'bg-laundry-blue text-white scale-105 shadow-xl'
               : 'bg-gray-300 text-gray-600 scale-95'
-          } hover:bg-laundry-blue-dark active:bg-laundry-blue-dark disabled:opacity-50 disabled:cursor-not-allowed`}
+          } ${isPressed ? 'bg-laundry-blue-dark text-gray-300' : ''} hover:bg-laundry-blue-dark hover:text-gray-300 active:bg-laundry-blue-dark disabled:opacity-50 disabled:cursor-not-allowed`}
           title={t('common.send')}
         >
           {uploading 

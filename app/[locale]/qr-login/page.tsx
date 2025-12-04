@@ -23,14 +23,44 @@ export default function QRLoginPage() {
 
   const checkExistingUser = async () => {
     try {
-      // Try cached visitor ID first for faster check
+      // First check localStorage for user_id (more reliable than device_id)
+      const storedUserId = localStorage.getItem('user_id');
+      
+      if (storedUserId) {
+        const { data: user } = await supabase
+          .from('users')
+          .select('id, nickname, role, language, device_id')
+          .eq('id', storedUserId)
+          .single();
+
+        if (user) {
+          // User found via localStorage - update device_id if it changed
+          const currentDeviceId = await getVisitorId();
+          if (user.device_id !== currentDeviceId) {
+            // Update device_id silently (fire and forget)
+            supabase
+              .from('users')
+              .update({ device_id: currentDeviceId })
+              .eq('id', user.id);
+          }
+          // Auto-login with existing account
+          await handleAutoLogin(user);
+          return;
+        }
+        // User ID in localStorage but not in database - clear it
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('user_nickname');
+        localStorage.removeItem('user_role');
+      }
+
+      // Fallback: Try cached visitor ID for faster check
       const cachedId = getCachedVisitorId();
       
       if (cachedId) {
         // Quick check with cached ID
         const { data: quickCheck } = await supabase
           .from('users')
-          .select('id, nickname, role, language')
+          .select('id, nickname, role, language, device_id')
           .eq('device_id', cachedId)
           .single();
 
@@ -46,7 +76,7 @@ export default function QRLoginPage() {
       
       const { data: existingUser } = await supabase
         .from('users')
-        .select('id, nickname, role, language')
+        .select('id, nickname, role, language, device_id')
         .eq('device_id', deviceId)
         .single();
 

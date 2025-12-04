@@ -14,6 +14,7 @@ interface MessageInputProps {
 
 export default function MessageInput({ roomId, userId, isStaff, onMessageSent }: MessageInputProps) {
   const t = useTranslations();
+  const [isFocused, setIsFocused] = useState(false);
   const [message, setMessage] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -127,7 +128,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
   };
 
   return (
-    <form onSubmit={handleSend} className="border-t-2 border-laundry-blue-light px-4 py-3 lg:px-4 lg:py-4 bg-white safe-bottom">
+    <form onSubmit={handleSend} className="border-t-2 border-laundry-blue-light px-6 py-4 lg:px-4 lg:py-4 bg-white safe-bottom">
       {imageFile && (
         <div className="mb-3 flex items-center gap-2">
           <span className="text-sm lg:text-sm text-black flex-1 truncate">{imageFile.name}</span>
@@ -143,7 +144,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
           </button>
         </div>
       )}
-      <div className="flex gap-2 lg:gap-2">
+      <div className="flex gap-3 lg:gap-2 relative">
         <input
           type="file"
           ref={fileInputRef}
@@ -152,27 +153,46 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
           className="hidden"
           id="image-upload"
         />
-        <label
-          htmlFor="image-upload"
-          className="px-4 py-3 lg:px-4 lg:py-2 border-2 border-laundry-blue-light rounded-lg cursor-pointer hover:bg-laundry-blue-light active:bg-laundry-blue-light text-black min-w-[44px] min-h-[44px] flex items-center justify-center text-xl lg:text-base"
-        >
-          📷
-        </label>
+        {isFocused && (
+          <label
+            htmlFor="image-upload"
+            className="px-3 py-2 lg:px-4 lg:py-2 border-2 border-laundry-blue-light rounded-lg cursor-pointer hover:bg-laundry-blue-light active:bg-laundry-blue-light text-black min-w-[44px] min-h-[44px] flex items-center justify-center text-lg lg:text-base animate-in slide-in-from-left duration-200"
+            title={t('uploadImage')}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </label>
+        )}
         <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={t('common.enterMessage')}
-          className="flex-1 px-4 py-3 lg:px-4 lg:py-2 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-base lg:text-sm min-h-[44px]"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 150)}
+          className="flex-1 px-5 py-4 lg:px-4 lg:py-2 pr-16 lg:pr-4 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-base lg:text-sm min-h-[44px]"
           maxLength={MESSAGE_LIMIT}
           autoComplete="off"
         />
         <button
           type="submit"
           disabled={uploading || (!message.trim() && !imageFile)}
-          className="px-6 py-3 lg:px-6 lg:py-2 bg-laundry-blue text-white rounded-lg hover:bg-laundry-blue-dark active:bg-laundry-blue-dark disabled:opacity-50 disabled:cursor-not-allowed font-medium text-base lg:text-sm min-w-[44px] min-h-[44px]"
+          className={`absolute right-2 top-1/2 -translate-y-1/2 px-3 py-2 lg:px-6 lg:py-2 rounded-full shadow-lg font-medium text-base lg:text-sm min-w-[44px] min-h-[44px] transition-all duration-200 ${
+            message.trim() || imageFile
+              ? 'bg-laundry-blue text-white scale-105 shadow-xl'
+              : 'bg-gray-300 text-gray-600 scale-95'
+          } hover:bg-laundry-blue-dark active:bg-laundry-blue-dark disabled:opacity-50 disabled:cursor-not-allowed`}
+          title={t('common.send')}
         >
-          {uploading ? '...' : t('common.send')}
+          {uploading 
+            ? '...' 
+            : (message.trim() || imageFile ? t('common.send') 
+            : (<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-4-4l4 4-4 4" />
+              </svg>))
+          }
         </button>
       </div>
     </form>

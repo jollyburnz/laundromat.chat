@@ -18,6 +18,12 @@ const config: Config = {
           "blue-hover": "#0052a3",
         },
       },
+      height: {
+        'screen': ['100vh', '100dvh'],
+      },
+      minHeight: {
+        'screen': ['100vh', '100dvh'],
+      },
     },
   },
   plugins: [],

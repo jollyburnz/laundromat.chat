@@ -181,10 +181,10 @@ export default function ChatPage() {
           <LanguageToggle inHeader={true} />
           <button
             onClick={handleLogout}
-            className="px-3 py-2 lg:px-4 lg:py-2 text-sm border-2 border-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white font-medium transition-colors text-laundry-blue min-w-[44px] min-h-[44px]"
+            className="px-3 py-2 lg:px-4 lg:py-2 text-base lg:text-sm border-2 border-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white font-medium transition-colors text-laundry-blue min-w-[44px] min-h-[44px]"
           >
             <span className="hidden sm:inline">{t('common.logout')}</span>
-            <span className="sm:hidden">⏻</span>
+            <span className="sm:hidden text-xl">⏻</span>
           </button>
         </div>
       </header>

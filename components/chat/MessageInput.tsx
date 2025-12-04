@@ -175,7 +175,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
           onBlur={() => setTimeout(() => setIsFocused(false), 150)}
           className={`flex-1 px-3 py-3 lg:px-4 lg:py-2 ${
             (message.trim() || imageFile) ? 'pr-14' : 'pr-12'
-          } lg:pr-4 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-sm lg:text-sm min-h-[44px] resize-none overflow-hidden`}
+          } lg:pr-20 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-sm lg:text-sm min-h-[44px] resize-none overflow-hidden`}
           rows={1}
           maxLength={MESSAGE_LIMIT}
           autoComplete="off"
@@ -183,7 +183,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
         <button
           type="submit"
           disabled={uploading || (!message.trim() && !imageFile)}
-          className={`absolute right-2 top-1/2 -translate-y-1/2 px-2 py-2 lg:px-6 lg:py-2 rounded-full shadow-lg font-medium text-base lg:text-sm min-w-[36px] min-h-[36px] lg:min-w-[44px] lg:min-h-[44px] transition-all duration-200 ${
+          className={`absolute right-2 top-1/2 -translate-y-1/2 px-2 py-2 lg:px-3 lg:py-1.5 rounded-full shadow-lg font-medium text-base lg:text-xs min-w-[36px] min-h-[36px] lg:min-w-auto lg:min-h-[36px] transition-all duration-200 ${
             message.trim() || imageFile
               ? 'bg-laundry-blue text-white scale-105 shadow-xl'
               : 'bg-gray-300 text-gray-600 scale-95'

@@ -73,7 +73,7 @@ export default function ReportIssueButton({
           <textarea
             value={issueText}
             onChange={(e) => setIssueText(e.target.value)}
-            placeholder="Describe the issue..."
+            placeholder={t('describeIssuePlaceholder')}
             className="w-full px-4 py-3 lg:py-2 border-2 border-laundry-blue-light rounded-lg mb-4 min-h-[120px] lg:min-h-[100px] focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-base lg:text-sm"
             maxLength={500}
           />

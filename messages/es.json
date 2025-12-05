@@ -56,6 +56,8 @@
     "staff": "Personal",
     "translate": "Traducir",
     "original": "Original",
+    "translated": "Traducido",
+    "showOriginal": "Mostrar Original",
     "reportIssue": "Reportar Problema",
     "describeIssuePlaceholder": "Describe el problema...",
     "uploadImage": "Subir Imagen",

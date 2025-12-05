@@ -218,52 +218,70 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
             key={msg.id}
             className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
           >
-            <div
-              className={`max-w-[85%] sm:max-w-[75%] lg:max-w-md px-4 py-3 lg:px-4 lg:py-2 rounded-lg ${
-                isOwnMessage
-                  ? 'bg-laundry-blue text-white'
-                  : 'bg-white border-2 border-laundry-blue-light text-black'
-              }`}
-            >
+            <div className={`max-w-[85%] sm:max-w-[75%] lg:max-w-lg px-4 py-3 rounded-2xl relative ${
+              isOwnMessage
+                ? 'bg-laundry-blue text-white ml-12'
+                : 'bg-white border border-gray-200 text-black mr-12 shadow-md'
+            }`}>
+
+              {/* Translation indicator at top for all messages that need translation */}
+              {needsTranslation && (
+                <div className="mb-2">
+                  <button
+                    onClick={() => toggleOriginal(msg.id)}
+                    className={`inline-flex items-center gap-1 text-xs ${
+                        isOwnMessage
+                          ? 'text-white hover:text-white/80'
+                          : 'text-laundry-blue hover:text-laundry-blue-dark'
+                      } transition-colors`}
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {showOriginal[msg.id] ? t('chat.translated') : t('chat.showOriginal')}
+                  </button>
+                </div>
+              )}
+
+              {/* User name for received messages */}
               {!isOwnMessage && (
-                <div className="flex items-center gap-2 mb-1.5 lg:mb-1">
-                  <span className={`font-semibold text-base lg:text-sm ${
-                    isOwnMessage ? 'text-white' : 'text-black'
-                  }`}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-medium text-sm text-laundry-blue">
                     {msg.user?.nickname || 'Unknown'}
                   </span>
                   <StaffBadge isStaff={msg.is_staff} />
                 </div>
               )}
-              {msg.image_url && (
-                <img
-                  src={msg.image_url}
-                  alt="Message attachment"
-                  className="max-w-full h-auto rounded mb-2"
-                />
-              )}
-              {displayText && (
-                <p className={`text-base lg:text-sm whitespace-pre-wrap break-words leading-relaxed ${
-                  isOwnMessage ? 'text-white' : 'text-black'
-                }`}>{displayText}</p>
-              )}
-              {needsTranslation && (
-                <button
-                  onClick={() => toggleOriginal(msg.id)}
-                  className={`text-sm lg:text-xs mt-2 lg:mt-1 opacity-70 hover:opacity-100 active:opacity-100 underline min-h-[44px] min-w-[44px] ${
-                    isOwnMessage ? 'text-white' : 'text-laundry-blue'
-                  }`}
-                >
-                  {showOriginal[msg.id] ? t('chat.translate') : t('chat.original')}
-                </button>
-              )}
-              <div className="flex items-center justify-between mt-2 lg:mt-1">
-                <div className={`text-sm lg:text-xs opacity-70 ${
-                  isOwnMessage ? 'text-white' : 'text-black'
-                }`}>
-                  {formatTime(msg.created_at)}
-                </div>
-                {(userRole === 'staff' || userRole === 'admin') && (
+
+              {/* Message content */}
+              <div className="space-y-2">
+                {msg.image_url && (
+                  <img
+                    src={msg.image_url}
+                    alt="Message attachment"
+                    className="max-w-full h-auto rounded-lg"
+                  />
+                )}
+
+                {displayText && (
+                  <p className={`text-base whitespace-pre-wrap break-words leading-relaxed ${
+                    isOwnMessage ? 'text-white' : 'text-black'
+                  }`}>
+                    {displayText}
+                  </p>
+                )}
+              </div>
+
+              {/* Timestamp */}
+              <div className={`text-xs opacity-70 mt-2 text-right ${
+                isOwnMessage ? 'text-white/70' : 'text-black/50'
+              }`}>
+                {formatTime(msg.created_at)}
+              </div>
+
+              {/* Moderation tools for staff */}
+              {(userRole === 'staff' || userRole === 'admin') && (
+                <div className="absolute -top-2 -right-2">
                   <ModerationTools
                     messageId={msg.id}
                     userId={userId}
@@ -272,8 +290,8 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
                       setMessages(prev => prev.filter(m => m.id !== msg.id));
                     }}
                   />
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         );

@@ -16,7 +16,9 @@
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "delete": "Eliminar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "today": "Hoy",
+    "yesterday": "Ayer"
   },
   "auth": {
     "phoneLogin": "Iniciar sesión con teléfono",

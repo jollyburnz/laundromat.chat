@@ -16,7 +16,9 @@
     "cancel": "取消",
     "confirm": "確認",
     "delete": "刪除",
-    "close": "關閉"
+    "close": "關閉",
+    "today": "今天",
+    "yesterday": "昨天"
   },
   "auth": {
     "phoneLogin": "手機登入",

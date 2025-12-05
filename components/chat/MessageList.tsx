@@ -189,6 +189,145 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
     });
   };
 
+  const formatDateDivider = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const dateOnly = date.toDateString();
+    const todayOnly = today.toDateString();
+    const yesterdayOnly = yesterday.toDateString();
+
+    if (dateOnly === todayOnly) {
+      return t('common.today');
+    } else if (dateOnly === yesterdayOnly) {
+      return t('common.yesterday');
+    } else {
+      // Return full date
+      const options: Intl.DateTimeFormatOptions = {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric'
+      };
+
+      const localeMap: Record<string, string> = {
+        'zh': 'zh-TW',
+        'es': 'es-ES',
+        'en': 'en-US'
+      };
+
+      return date.toLocaleDateString(localeMap[locale] || 'en-US', options);
+    }
+  };
+
+  const groupMessagesByDate = (messages: Message[]) => {
+    const groups: { date: string; messages: Message[] }[] = [];
+
+    messages.forEach(msg => {
+      const messageDate = new Date(msg.created_at).toDateString();
+      const lastGroup = groups[groups.length - 1];
+
+      if (!lastGroup || lastGroup.date !== messageDate) {
+        groups.push({ date: messageDate, messages: [msg] });
+      } else {
+        lastGroup.messages.push(msg);
+      }
+    });
+
+    return groups;
+  };
+
+  const renderMessage = (msg: Message) => {
+    const isOwnMessage = msg.user_id === userId;
+    const displayText = getDisplayText(msg);
+    const translationsEnabled = process.env.NEXT_PUBLIC_ENABLE_TRANSLATIONS === 'true';
+    const needsTranslation = translationsEnabled && msg.language && msg.language !== locale;
+
+    return (
+      <div
+        key={msg.id}
+        className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
+      >
+        <div className={`max-w-[85%] sm:max-w-[75%] lg:max-w-lg px-4 py-3 rounded-2xl relative ${
+          isOwnMessage
+            ? 'bg-laundry-blue text-white ml-12'
+            : 'bg-white border border-gray-200 text-black mr-12 shadow-md'
+        }`}>
+
+          {/* Translation indicator at top for all messages that need translation */}
+          {needsTranslation && (
+            <div className="mb-2">
+              <button
+                onClick={() => toggleOriginal(msg.id)}
+                className={`inline-flex items-center gap-1 text-xs ${
+                    isOwnMessage
+                      ? 'text-white hover:text-white/80'
+                      : 'text-laundry-blue hover:text-laundry-blue-dark'
+                  } transition-colors`}
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {showOriginal[msg.id] ? t('chat.translated') : t('chat.showOriginal')}
+              </button>
+            </div>
+          )}
+
+          {/* User name for received messages */}
+          {!isOwnMessage && (
+            <div className="flex items-center gap-2 mb-1">
+              <span className="font-medium text-sm text-laundry-blue">
+                {msg.user?.nickname || 'Unknown'}
+              </span>
+              <StaffBadge isStaff={msg.is_staff} />
+            </div>
+          )}
+
+          {/* Message content */}
+          <div className="space-y-2">
+            {msg.image_url && (
+              <img
+                src={msg.image_url}
+                alt="Message attachment"
+                className="max-w-full h-auto rounded-lg"
+              />
+            )}
+
+            {displayText && (
+              <p className={`text-base whitespace-pre-wrap break-words leading-relaxed ${
+                isOwnMessage ? 'text-white' : 'text-black'
+              }`}>
+                {displayText}
+              </p>
+            )}
+          </div>
+
+          {/* Timestamp */}
+          <div className={`text-xs opacity-70 mt-2 text-right ${
+            isOwnMessage ? 'text-white/70' : 'text-black/50'
+          }`}>
+            {formatTime(msg.created_at)}
+          </div>
+
+          {/* Moderation tools for staff */}
+          {(userRole === 'staff' || userRole === 'admin') && (
+            <div className="absolute -top-2 -right-2">
+              <ModerationTools
+                messageId={msg.id}
+                userId={userId}
+                isStaff={true}
+                onMessageDeleted={() => {
+                  setMessages(prev => prev.filter(m => m.id !== msg.id));
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center bg-laundry-blue-light">
@@ -205,97 +344,31 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
     );
   }
 
+  const messageGroups = groupMessagesByDate(messages);
+
   return (
-    <div className="flex-1 overflow-y-auto p-3 lg:p-4 space-y-3 lg:space-y-4 bg-laundry-blue-light">
-      {messages.map((msg) => {
-        const isOwnMessage = msg.user_id === userId;
-        const displayText = getDisplayText(msg);
-        const translationsEnabled = process.env.NEXT_PUBLIC_ENABLE_TRANSLATIONS === 'true';
-        const needsTranslation = translationsEnabled && msg.language && msg.language !== locale;
-
-        return (
-          <div
-            key={msg.id}
-            className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
-          >
-            <div className={`max-w-[85%] sm:max-w-[75%] lg:max-w-lg px-4 py-3 rounded-2xl relative ${
-              isOwnMessage
-                ? 'bg-laundry-blue text-white ml-12'
-                : 'bg-white border border-gray-200 text-black mr-12 shadow-md'
-            }`}>
-
-              {/* Translation indicator at top for all messages that need translation */}
-              {needsTranslation && (
-                <div className="mb-2">
-                  <button
-                    onClick={() => toggleOriginal(msg.id)}
-                    className={`inline-flex items-center gap-1 text-xs ${
-                        isOwnMessage
-                          ? 'text-white hover:text-white/80'
-                          : 'text-laundry-blue hover:text-laundry-blue-dark'
-                      } transition-colors`}
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {showOriginal[msg.id] ? t('chat.translated') : t('chat.showOriginal')}
-                  </button>
-                </div>
-              )}
-
-              {/* User name for received messages */}
-              {!isOwnMessage && (
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-sm text-laundry-blue">
-                    {msg.user?.nickname || 'Unknown'}
-                  </span>
-                  <StaffBadge isStaff={msg.is_staff} />
-                </div>
-              )}
-
-              {/* Message content */}
-              <div className="space-y-2">
-                {msg.image_url && (
-                  <img
-                    src={msg.image_url}
-                    alt="Message attachment"
-                    className="max-w-full h-auto rounded-lg"
-                  />
-                )}
-
-                {displayText && (
-                  <p className={`text-base whitespace-pre-wrap break-words leading-relaxed ${
-                    isOwnMessage ? 'text-white' : 'text-black'
-                  }`}>
-                    {displayText}
-                  </p>
-                )}
+    <div className="flex-1 overflow-y-auto p-3 lg:p-4 bg-laundry-blue-light">
+      {messageGroups.map((group, groupIndex) => (
+        <div key={group.date}>
+          {/* Date Divider - Visual Option B: Full Width Line */}
+          <div className="flex items-center justify-center my-6 lg:my-8">
+            <div className="flex items-center w-full max-w-xs">
+              <div className="flex-1 h-px bg-gray-300"></div>
+              <div className="bg-laundry-blue-light px-3 py-1 rounded-full border border-gray-300">
+                <span className="text-xs text-gray-600 font-medium">
+                  {formatDateDivider(group.date)}
+                </span>
               </div>
-
-              {/* Timestamp */}
-              <div className={`text-xs opacity-70 mt-2 text-right ${
-                isOwnMessage ? 'text-white/70' : 'text-black/50'
-              }`}>
-                {formatTime(msg.created_at)}
-              </div>
-
-              {/* Moderation tools for staff */}
-              {(userRole === 'staff' || userRole === 'admin') && (
-                <div className="absolute -top-2 -right-2">
-                  <ModerationTools
-                    messageId={msg.id}
-                    userId={userId}
-                    isStaff={true}
-                    onMessageDeleted={() => {
-                      setMessages(prev => prev.filter(m => m.id !== msg.id));
-                    }}
-                  />
-                </div>
-              )}
+              <div className="flex-1 h-px bg-gray-300"></div>
             </div>
           </div>
-        );
-      })}
+
+          {/* Messages for this date */}
+          <div className="space-y-3 lg:space-y-4">
+            {group.messages.map((msg) => renderMessage(msg))}
+          </div>
+        </div>
+      ))}
       <div ref={messagesEndRef} />
     </div>
   );

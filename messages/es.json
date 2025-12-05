@@ -88,6 +88,19 @@
     "newMessage": "Nuevo mensaje",
     "newMessageInRoom": "Nuevo mensaje en {room}",
     "staffAnnouncement": "Anuncio del Personal"
+  },
+  "dataRetention": {
+    "footer": "Este chat se restablece semanalmente. Todos los mensajes y cuentas se eliminan cada domingo para mantener las conversaciones frescas.",
+    "title": "Aviso de Restablecimiento Semanal",
+    "description": "Este chat está diseñado para mantenerse fresco y mínimo. Cada semana, todos los datos se restablecen automáticamente:",
+    "includes1": "Todos los mensajes de chat se eliminan",
+    "includes2": "Todas las cuentas de usuario se eliminan (excepto personal)",
+    "includes3": "Todas las imágenes y archivos adjuntos se eliminan",
+    "includes4": "Todas las traducciones de mensajes se eliminan",
+    "preserved": "Solo las salas del sistema y las cuentas del personal se conservan.",
+    "purpose": "Este restablecimiento semanal asegura que el chat se mantenga enfocado en las conversaciones actuales en la lavandería.",
+    "schedule": "Horario de restablecimiento: Todos los domingos a las 3 AM UTC",
+    "howToContinue": "Para continuar chateando, simplemente escanee el código QR nuevamente o inicie sesión con un nuevo apodo después del restablecimiento."
   }
 }
 

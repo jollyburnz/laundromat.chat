@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 /**
- * Weekly purge cron job endpoint
- * Deletes messages older than 7 days and associated images
+ * Weekly full reset cron job endpoint
+ * Deletes ALL messages, ALL user accounts (except staff/admin), and associated images
  * Called automatically by Vercel Cron every Sunday at 3 AM
  */
 export async function GET(request: NextRequest) {
@@ -29,28 +29,23 @@ export async function GET(request: NextRequest) {
   );
 
   try {
-    // Calculate 7 days ago timestamp
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const cutoffDate = sevenDaysAgo.toISOString();
-
-    // Step 1: Get old messages with images before deletion
-    const { data: oldMessages, error: fetchError } = await supabase
+    // Step 1: Get ALL messages with images before deletion (full reset)
+    const { data: allMessages, error: fetchError } = await supabase
       .from('messages')
-      .select('id, image_url')
-      .lt('created_at', cutoffDate);
+      .select('id, image_url');
 
     if (fetchError) {
-      console.error('Error fetching old messages:', fetchError);
+      console.error('Error fetching messages:', fetchError);
       throw fetchError;
     }
 
     let deletedMessagesCount = 0;
     let deletedImagesCount = 0;
+    let deletedUsersCount = 0;
 
-    if (oldMessages && oldMessages.length > 0) {
+    if (allMessages && allMessages.length > 0) {
       // Step 2: Delete images from storage
-      const imageUrls = oldMessages
+      const imageUrls = allMessages
         .map((msg) => msg.image_url)
         .filter((url): url is string => Boolean(url));
 
@@ -89,55 +84,39 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Step 3: Delete old messages (translations will cascade delete)
+      // Step 3: Delete ALL messages (translations will cascade delete)
       const { error: deleteError, count } = await supabase
         .from('messages')
-        .delete({ count: 'exact' })
-        .lt('created_at', cutoffDate);
+        .delete({ count: 'exact' });
 
       if (deleteError) {
         console.error('Error deleting messages:', deleteError);
         throw deleteError;
       }
 
-      deletedMessagesCount = count || oldMessages.length;
+      deletedMessagesCount = count || allMessages.length;
     }
 
-    // Optional: Clean up inactive users (users with no recent messages, not staff/admin)
-    // This is optional - uncomment if you want to purge users too
-    
-    const { data: inactiveUsers, error: userFetchError } = await supabase
+    // Step 4: Delete ALL users except staff/admin (full reset)
+    const { error: userDeleteError, count: userCount } = await supabase
       .from('users')
-      .select('id')
-      .not('role', 'in', '(staff,admin)')
-      .not('id', 'in', 
-        supabase
-          .from('messages')
-          .select('user_id')
-          .gte('created_at', cutoffDate)
-          .single()
-      );
+      .delete({ count: 'exact' })
+      .not('role', 'in', '(staff,admin)');
 
-    let deletedUsersCount = 0;
-    if (!userFetchError && inactiveUsers && inactiveUsers.length > 0) {
-      const { error: userDeleteError, count: userCount } = await supabase
-        .from('users')
-        .delete({ count: 'exact' })
-        .in('id', inactiveUsers.map(u => u.id))
-        .not('role', 'in', '(staff,admin)');
-
-      if (!userDeleteError) {
-        deletedUsersCount = userCount || 0;
-      }
+    if (userDeleteError) {
+      console.error('Error deleting users:', userDeleteError);
+      // Don't throw - continue even if user deletion fails
+    } else {
+      deletedUsersCount = userCount || 0;
     }
 
     return NextResponse.json({
       success: true,
       deletedMessages: deletedMessagesCount,
       deletedImages: deletedImagesCount,
-      cutoffDate: cutoffDate,
-      purgeDate: new Date().toISOString(),
-      deletedUsers: deletedUsersCount, // Uncomment if user cleanup is enabled
+      deletedUsers: deletedUsersCount,
+      resetDate: new Date().toISOString(),
+      message: 'Full weekly reset completed successfully',
     });
   } catch (error: any) {
     console.error('Purge error:', error);

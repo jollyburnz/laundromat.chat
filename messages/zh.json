@@ -88,6 +88,19 @@
     "newMessage": "新訊息",
     "newMessageInRoom": "{room} 有新訊息",
     "staffAnnouncement": "工作人員公告"
+  },
+  "dataRetention": {
+    "footer": "此聊天室每週重置。所有訊息和帳號會在每週日刪除，保持對話新鮮。",
+    "title": "每週重置通知",
+    "description": "此聊天室設計為保持新鮮且簡潔。每週所有資料會自動重置：",
+    "includes1": "所有聊天訊息會被刪除",
+    "includes2": "所有用戶帳號會被刪除（員工除外）",
+    "includes3": "所有圖片和附件會被移除",
+    "includes4": "所有訊息翻譯會被清除",
+    "preserved": "僅系統房間和員工帳號會被保留。",
+    "purpose": "此每週重置確保聊天內容聚焦於洗衣店當前的對話。",
+    "schedule": "重置時間表：每週日 UTC 時間凌晨3點",
+    "howToContinue": "重置後，只需再次掃描 QR 碼或使用新暱稱登入即可繼續聊天。"
   }
 }
 

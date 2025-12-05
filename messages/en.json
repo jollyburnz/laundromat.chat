@@ -88,6 +88,19 @@
     "newMessage": "New message",
     "newMessageInRoom": "New message in {room}",
     "staffAnnouncement": "Staff Announcement"
+  },
+  "dataRetention": {
+    "footer": "This chat resets weekly. All messages and accounts are deleted every Sunday to keep conversations fresh.",
+    "title": "Weekly Reset Notice",
+    "description": "This chat is designed to stay fresh and minimal. Every week, all data is automatically reset:",
+    "includes1": "All chat messages are deleted",
+    "includes2": "All user accounts are deleted (except staff)",
+    "includes3": "All images and attachments are removed",
+    "includes4": "All message translations are cleared",
+    "preserved": "Only system rooms and staff accounts are preserved.",
+    "purpose": "This weekly reset ensures the chat stays focused on current conversations happening at the laundromat right now.",
+    "schedule": "Reset schedule: Every Sunday at 3 AM UTC",
+    "howToContinue": "To continue chatting, simply scan the QR code again or log in with a new nickname after the reset."
   }
 }
 

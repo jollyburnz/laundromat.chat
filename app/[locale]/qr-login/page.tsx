@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { supabase } from '@/lib/supabase/client';
 import { getVisitorId, getCachedVisitorId } from '@/lib/fingerprint';
 import NicknameSetup from '@/components/auth/NicknameSetup';
+import DataRetentionNotice from '@/components/ui/DataRetentionNotice';
 
 export default function QRLoginPage() {
   const t = useTranslations('auth');
@@ -181,6 +182,7 @@ export default function QRLoginPage() {
           </div>
           {error && <p className="text-red-600 text-sm font-medium mb-4">{error}</p>}
           <NicknameSetup onNicknameSet={handleNicknameSet} loading={loading} />
+          <DataRetentionNotice variant="footer" />
         </div>
       </div>
     );

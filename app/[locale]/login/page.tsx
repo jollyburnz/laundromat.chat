@@ -6,6 +6,7 @@ import PhoneLogin from '@/components/auth/PhoneLogin';
 import QRCodeLogin from '@/components/auth/QRCodeLogin';
 import AnonymousLogin from '@/components/auth/AnonymousLogin';
 import LanguageToggle from '@/components/ui/LanguageToggle';
+import DataRetentionNotice from '@/components/ui/DataRetentionNotice';
 
 type LoginMethod = 'phone' | 'qr' | 'anonymous';
 
@@ -67,6 +68,7 @@ export default function LoginPage() {
           {method === 'qr' && <QRCodeLogin />}
           {method === 'anonymous' && <AnonymousLogin />}
         </div>
+        <DataRetentionNotice variant="footer" />
       </div>
     </div>
   );

@@ -171,6 +171,12 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
             e.target.style.height = 'auto';
             e.target.style.height = `${e.target.scrollHeight}px`;
           }}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSend(e as any);
+            }
+          }}
           placeholder={t('common.enterMessage')}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 150)}
@@ -212,6 +218,16 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
             ))
           }
         </button>
+      </div>
+
+      {/* Input instructions - desktop only */}
+      <div className="hidden lg:flex items-center justify-between mt-2 text-xs text-gray-500">
+        <span>{t('common.inputInstructions')}</span>
+        {imageFile && (
+          <span className="text-laundry-blue">
+            📎 {Math.round(imageFile.size / 1024)}KB
+          </span>
+        )}
       </div>
     </form>
   );

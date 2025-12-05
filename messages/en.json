@@ -3,6 +3,7 @@
     "welcome": "Welcome to",
     "send": "Send",
     "enterMessage": "Type a message...",
+    "inputInstructions": "Press Enter to send, Shift+Enter for new line",
     "login": "Login",
     "logout": "Logout",
     "settings": "Settings",

@@ -3,6 +3,7 @@
     "welcome": "Bienvenido a",
     "send": "Enviar",
     "enterMessage": "Escribe un mensaje...",
+    "inputInstructions": "Presiona Enter para enviar, Shift+Enter para nueva línea",
     "login": "Iniciar sesión",
     "logout": "Cerrar sesión",
     "settings": "Configuración",

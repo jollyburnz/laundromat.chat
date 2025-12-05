@@ -3,6 +3,7 @@
     "welcome": "歡迎來到",
     "send": "發送",
     "enterMessage": "輸入訊息...",
+    "inputInstructions": "按 Enter 发送，Shift+Enter 换行",
     "login": "登入",
     "logout": "登出",
     "settings": "設定",

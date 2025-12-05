@@ -37,12 +37,16 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Track previous message count for purge detection
+  const prevMessageCountRef = useRef<number>(0);
+
   // Use custom hook for translation management
   const {
     translations,
     showOriginal,
     toggleOriginal,
     fetchTranslationForMessage,
+    clearCaches,
     isLoading: translationsLoading,
   } = useMessageTranslations({
     messages,
@@ -51,15 +55,36 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
 
   useEffect(() => {
     if (!roomId) return;
-    
+
     fetchMessages();
     const cleanup = subscribeToMessages();
-    
+
     // Properly clean up subscription when roomId changes or component unmounts
     return () => {
       cleanup();
     };
   }, [roomId]);
+
+  // Component-level purge detection
+  useEffect(() => {
+    const currentCount = messages.length;
+    const previousCount = prevMessageCountRef.current;
+
+    // Detect significant message count drop (indicating purge)
+    if (previousCount > 0 && currentCount < previousCount - 5) {
+      console.log(`Purge detected: messages dropped from ${previousCount} to ${currentCount}`);
+
+      // Force clear all translation caches
+      // This will prevent stale browser sessions from making unnecessary API calls
+      clearCaches();
+
+      // Optional: Show user notification about data reset
+      console.log('Chat data has been reset - all previous messages were cleared');
+    }
+
+    // Update previous count
+    prevMessageCountRef.current = currentCount;
+  }, [messages.length, clearCaches]);
 
   useEffect(() => {
     scrollToBottom();

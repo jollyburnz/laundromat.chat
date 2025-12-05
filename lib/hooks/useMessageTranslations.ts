@@ -17,6 +17,7 @@ interface UseMessageTranslationsReturn {
   showOriginal: Record<string, boolean>;
   toggleOriginal: (messageId: string) => void;
   fetchTranslationForMessage: (message: Message) => Promise<void>;
+  clearCaches: () => void;
   isLoading: boolean;
 }
 
@@ -211,11 +212,18 @@ export function useMessageTranslations({
     setShowOriginal(prev => ({ ...prev, [messageId]: !prev[messageId] }));
   }, []);
 
+  const clearCaches = useCallback(() => {
+    console.log('Clearing translation caches due to purge detection');
+    setTranslations({});
+    setShowOriginal({});
+  }, []);
+
   return {
     translations,
     showOriginal,
     toggleOriginal,
     fetchTranslationForMessage,
+    clearCaches,
     isLoading,
   };
 }

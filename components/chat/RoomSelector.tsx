@@ -107,14 +107,14 @@ export default function RoomSelector({ currentRoomId, onRoomSelect, userRole }: 
 
   if (loading) {
     return (
-      <div className="border-r border-laundry-blue-light bg-white h-full overflow-y-auto w-16 lg:w-64 flex flex-col items-center justify-center">
+      <div className="border-r border-laundry-blue-light bg-white h-full overflow-y-auto w-16 lg:w-80 flex flex-col items-center justify-center">
         <div className="text-black">...</div>
       </div>
     );
   }
 
   return (
-    <div className="border-r border-laundry-blue-light bg-white h-full overflow-y-auto w-16 lg:w-64 flex flex-col">
+    <div className="border-r border-laundry-blue-light bg-white h-full overflow-y-auto w-16 lg:w-80 flex flex-col">
       {/* Header - hidden on mobile, shown on desktop */}
       <div className="hidden lg:block p-4 border-b border-laundry-blue-light bg-laundry-blue text-white">
         <h2 className="font-semibold">{t('selectRoom')}</h2>

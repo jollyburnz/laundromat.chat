@@ -33,6 +33,10 @@ export function useMessageTranslations({
   const currentFetchLanguageRef = useRef<string | null>(null);
   const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
 
+  // Track previous values for separate effects
+  const prevLocaleRef = useRef(locale);
+  const prevMessagesLenRef = useRef(messages.length);
+
   // Fetch translation for a single message
   const fetchTranslationForMessage = useCallback(async (message: Message) => {
     const translationsEnabled = process.env.NEXT_PUBLIC_ENABLE_TRANSLATIONS === 'true';
@@ -188,25 +192,38 @@ export function useMessageTranslations({
     }
   }, []);
 
-  // Refetch translations when messages or locale changes
+  // 1. Refetch all translations only when locale changes
   useEffect(() => {
-    if (messages.length > 0 && locale) {
-      // Clear old translations when locale changes
+    if (prevLocaleRef.current !== locale) {
       setTranslations({});
       setShowOriginal({});
       fetchTranslations(messages, locale);
+      prevLocaleRef.current = locale;
     }
 
-    // Capture the current controllers map at effect start
+    // Cleanup: abort any in-flight fetches
     const currentControllers = abortControllersRef.current;
-
     return () => {
-      // Cleanup: abort any in-flight fetches using the captured map
       currentControllers.forEach(controller => controller.abort());
       currentControllers.clear();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages, locale]); // fetchTranslations is stable (empty deps), so we don't need it in deps
+  }, [locale]);
+
+  // 2. Only fetch translation for newly added message (if any)
+  useEffect(() => {
+    if (messages.length > prevMessagesLenRef.current) {
+      const newMessages = messages.slice(prevMessagesLenRef.current);
+      newMessages.forEach(msg => {
+        fetchTranslationForMessage(msg);
+      });
+      prevMessagesLenRef.current = messages.length;
+    } else if (messages.length < prevMessagesLenRef.current) {
+      // reset if messages list shrank (room switch, etc)
+      prevMessagesLenRef.current = messages.length;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   const toggleOriginal = useCallback((messageId: string) => {
     setShowOriginal(prev => ({ ...prev, [messageId]: !prev[messageId] }));

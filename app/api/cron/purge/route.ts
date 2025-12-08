@@ -87,7 +87,8 @@ export async function GET(request: NextRequest) {
       // Step 3: Delete ALL messages (translations will cascade delete)
       const { error: deleteError, count } = await supabase
         .from('messages')
-        .delete({ count: 'exact' });
+        .delete({ count: 'exact' })
+        .neq('id', null); // WHERE id IS NOT NULL (deletes all messages)
 
       if (deleteError) {
         console.error('Error deleting messages:', deleteError);

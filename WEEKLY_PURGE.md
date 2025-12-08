@@ -2,19 +2,19 @@
 
 ## Overview
 
-The app automatically purges old data every week to maintain a minimal database size. This keeps the chat focused on recent, relevant conversations.
+The app automatically performs a **full reset** every week to maintain a minimal database size. This completely clears all chat data while preserving system infrastructure and staff accounts.
 
 ## What Gets Purged
 
-- **Messages** older than 7 days
+- **ALL Messages** (full reset)
 - **Message translations** (cascades automatically)
 - **Image files** in storage associated with deleted messages
+- **ALL User accounts** (except staff/admin)
 
 ## What's Preserved
 
-- **User accounts** (for quick re-login)
+- **Staff/Admin user accounts** (preserved for system access)
 - **System rooms** (General, Machine Issues, etc.)
-- **Recent messages** (last 7 days)
 
 ## Schedule
 
@@ -73,8 +73,9 @@ Successful purge returns:
   "success": true,
   "deletedMessages": 42,
   "deletedImages": 5,
-  "cutoffDate": "2024-01-15T03:00:00.000Z",
-  "purgeDate": "2024-01-22T03:00:00.000Z"
+  "deletedUsers": 15,
+  "resetDate": "2024-01-22T03:00:00.000Z",
+  "message": "Full weekly reset completed successfully"
 }
 ```
 
@@ -122,18 +123,24 @@ Examples:
 - Weekly on Monday: `0 3 * * 1`
 - Every 6 hours: `0 */6 * * *`
 
-### Change retention period
+### Change from full reset to age-based purging
 
-Edit `app/api/cron/purge/route.ts`:
+If you want to change from full reset to age-based purging, edit `app/api/cron/purge/route.ts`:
 
 ```typescript
-// Change from 7 days to 14 days
-sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 14);
+// Replace the full reset logic with age-based purging
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+const { error: deleteError, count } = await supabase
+  .from('messages')
+  .delete({ count: 'exact' })
+  .lt('created_at', sevenDaysAgo.toISOString());
 ```
 
-### Enable user cleanup
+### Modify user cleanup behavior
 
-Uncomment the user cleanup section in the purge route if you want to also delete inactive users.
+The user cleanup is currently enabled and deletes all non-staff/admin users. To change this behavior, modify the user deletion logic in the purge route.
 
 ## Security
 

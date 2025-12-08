@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
       const { error: deleteError, count } = await supabase
         .from('messages')
         .delete({ count: 'exact' })
-        .neq('id', null); // WHERE id IS NOT NULL (deletes all messages)
+        .lt('created_at', new Date().toISOString()); // Matches all existing messages
 
       if (deleteError) {
         console.error('Error deleting messages:', deleteError);

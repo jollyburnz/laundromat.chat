@@ -182,7 +182,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
           onBlur={() => setTimeout(() => setIsFocused(false), 150)}
           className={`flex-1 px-3 py-3 lg:px-4 lg:py-2 ${
             (message.trim() || imageFile) ? 'pr-14' : 'pr-12'
-          } lg:pr-20 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-sm lg:text-sm min-h-[44px] resize-none overflow-hidden`}
+          } lg:pr-20 border-2 border-laundry-blue-light rounded-lg focus:outline-none focus:ring-2 focus:ring-laundry-blue focus:border-laundry-blue text-black text-base lg:text-sm min-h-[44px] resize-none overflow-hidden`}
           rows={1}
           maxLength={MESSAGE_LIMIT}
           autoComplete="off"

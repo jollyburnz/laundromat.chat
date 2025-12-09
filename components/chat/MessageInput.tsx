@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { supabase } from '@/lib/supabase/client';
 import { detectLanguage } from '@/lib/utils';
@@ -20,9 +20,17 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
   const [uploading, setUploading] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lastMessageTime = useRef<number>(0);
   const MESSAGE_LIMIT = 500;
   const RATE_LIMIT_MS = 2000; // 2 seconds between messages
+
+  // Reset textarea height when message becomes empty
+  useEffect(() => {
+    if (!message && textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+  }, [message]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -165,6 +173,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
           </svg>
         </label>
         <textarea
+          ref={textareaRef}
           value={message}
           onChange={e => {
             setMessage(e.target.value);

@@ -107,42 +107,81 @@ export default function RoomSelector({ currentRoomId, onRoomSelect, userRole }: 
 
   if (loading) {
     return (
-      <div className="border-r border-laundry-blue-light bg-white h-full overflow-y-auto w-16 lg:w-80 flex flex-col items-center justify-center">
-        <div className="text-black">...</div>
-      </div>
+      <>
+        {/* Mobile loading - bottom tabs placeholder */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-laundry-blue-light z-10">
+          <div className="flex justify-around px-2 py-2">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex flex-col items-center justify-center p-2 min-h-[60px] flex-1">
+                <div className="w-6 h-6 mb-1 bg-laundry-blue-light rounded animate-pulse"></div>
+                <div className="w-8 h-3 bg-laundry-blue-light rounded animate-pulse"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Desktop loading - sidebar */}
+        <div className="hidden lg:block border-r border-laundry-blue-light bg-white h-full overflow-y-auto w-80 flex flex-col items-center justify-center">
+          <div className="text-black">...</div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="border-r border-laundry-blue-light bg-white h-full overflow-y-auto w-16 lg:w-80 flex flex-col">
-      {/* Header - hidden on mobile, shown on desktop */}
-      <div className="hidden lg:block p-4 border-b border-laundry-blue-light bg-laundry-blue text-white">
-        <h2 className="font-semibold">{t('selectRoom')}</h2>
+    <>
+      {/* Mobile: Bottom Tab Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-laundry-blue-light z-50">
+        <div className="flex justify-around px-2 py-2">
+          {rooms.map((room) => (
+            <button
+              key={room.id}
+              onClick={() => onRoomSelect(room.id)}
+              className={`flex flex-col items-center justify-center p-2 min-h-[60px] flex-1 rounded-lg transition-colors ${
+                currentRoomId === room.id
+                  ? 'bg-laundry-blue text-white'
+                  : 'text-laundry-blue hover:bg-laundry-blue-light active:bg-laundry-blue-light'
+              }`}
+            >
+              <div className="w-6 h-6 mb-1">
+                {getRoomIcon(room)}
+              </div>
+              <span className="text-xs font-medium truncate max-w-full">
+                {getRoomName(room).split(' ')[0]} {/* First word only */}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="flex flex-col lg:divide-y lg:divide-laundry-blue-light">
-        {rooms.map((room) => (
-          <button
-            key={room.id}
-            onClick={() => onRoomSelect(room.id)}
-            className={`w-full flex flex-col lg:flex-row items-center justify-center lg:justify-start gap-2 p-3 lg:p-4 min-h-[44px] hover:bg-laundry-blue-light active:bg-laundry-blue-light transition-colors ${
-              currentRoomId === room.id 
-                ? 'bg-laundry-blue-light border-l-4 lg:border-l-4 border-laundry-blue text-laundry-blue' 
-                : 'text-laundry-blue lg:text-black'
-            }`}
-            title={getRoomName(room)} // Tooltip for mobile
-          >
-            <div className="flex-shrink-0">
-              {getRoomIcon(room)}
-            </div>
-            {/* Text only on desktop */}
-            <div className="hidden lg:block font-medium text-base">{getRoomName(room)}</div>
-            {room.type === 'support' && (
-              <div className="hidden lg:block text-xs text-black opacity-60 mt-1">{t('support')}</div>
-            )}
-          </button>
-        ))}
+
+      {/* Desktop: Vertical Sidebar */}
+      <div className="hidden lg:block border-r border-laundry-blue-light bg-white h-full overflow-y-auto w-80 flex flex-col">
+        {/* Header - shown on desktop */}
+        <div className="p-4 border-b border-laundry-blue-light bg-laundry-blue text-white">
+          <h2 className="font-semibold">{t('selectRoom')}</h2>
+        </div>
+        <div className="flex flex-col divide-y divide-laundry-blue-light">
+          {rooms.map((room) => (
+            <button
+              key={room.id}
+              onClick={() => onRoomSelect(room.id)}
+              className={`w-full flex items-center justify-start gap-3 p-4 hover:bg-laundry-blue-light active:bg-laundry-blue-light transition-colors ${
+                currentRoomId === room.id
+                  ? 'bg-laundry-blue-light border-l-4 border-laundry-blue text-laundry-blue'
+                  : 'text-black'
+              }`}
+            >
+              <div className="flex-shrink-0">
+                {getRoomIcon(room)}
+              </div>
+              <div className="font-medium text-base">{getRoomName(room)}</div>
+              {room.type === 'support' && (
+                <div className="text-xs text-black opacity-60 mt-1">{t('support')}</div>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

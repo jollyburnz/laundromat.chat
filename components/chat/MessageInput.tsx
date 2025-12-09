@@ -129,7 +129,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent }:
   };
 
   return (
-    <form onSubmit={handleSend} className="border-t-2 border-laundry-blue-light px-3 py-3 lg:px-4 lg:py-4 bg-white safe-bottom">
+    <form onSubmit={handleSend} className="lg:static fixed bottom-[76px] left-0 right-0 border-t-2 border-laundry-blue-light px-3 py-3 pb-2 lg:px-4 lg:py-4 lg:pb-4 bg-white safe-bottom z-40">
       {imageFile && (
         <div className="mb-3 flex items-center gap-2">
           <span className="text-sm lg:text-sm text-black flex-1 truncate">{imageFile.name}</span>

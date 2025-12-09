@@ -200,25 +200,40 @@ export default function ChatPage() {
       </div>
 
       <div className="flex-1 flex overflow-hidden relative">
-        {/* Room Selector - Always visible, icon-only on mobile */}
-        <RoomSelector
-          currentRoomId={currentRoomId}
-          onRoomSelect={handleRoomSelect}
-          userRole={userRole}
-        />
-        <div className="flex-1 flex flex-col bg-laundry-blue-light min-w-0">
+        {/* Room Selector - Desktop sidebar only */}
+        <div>
+          <RoomSelector
+            currentRoomId={currentRoomId}
+            onRoomSelect={handleRoomSelect}
+            userRole={userRole}
+          />
+        </div>
+        <div className="flex-1 flex flex-col bg-laundry-blue-light min-w-0 lg:ml-0 pb-[152px] lg:pb-0">
           <MessageList
             roomId={currentRoomId}
             userId={userId}
             userRole={userRole}
           />
-          <MessageInput
-            roomId={currentRoomId}
-            userId={userId}
-            isStaff={userRole === 'staff' || userRole === 'admin'}
-            onMessageSent={handleMessageSent}
-          />
+          {/* MessageInput is now fixed on mobile */}
+          <div className="lg:block hidden">
+            <MessageInput
+              roomId={currentRoomId}
+              userId={userId}
+              isStaff={userRole === 'staff' || userRole === 'admin'}
+              onMessageSent={handleMessageSent}
+            />
+          </div>
         </div>
+      </div>
+
+      {/* Fixed MessageInput for mobile */}
+      <div className="lg:hidden">
+        <MessageInput
+          roomId={currentRoomId}
+          userId={userId}
+          isStaff={userRole === 'staff' || userRole === 'admin'}
+          onMessageSent={handleMessageSent}
+        />
       </div>
     </div>
   );

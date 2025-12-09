@@ -161,22 +161,22 @@ export default function ChatPage() {
 
   return (
     <div className="h-screen-dynamic flex flex-col overflow-hidden">
-      <header className="bg-white text-laundry-blue border-b-2 border-laundry-blue px-4 lg:px-4 py-2 lg:py-3 flex items-center justify-between shadow-md safe-top">
-        <div className="flex items-center gap-2 lg:gap-4">
+      <header className="bg-white text-laundry-blue border-b-2 border-laundry-blue px-3 lg:px-4 py-1.5 lg:py-2 flex items-center justify-between shadow-md safe-top">
+        <div className="flex items-center gap-2 lg:gap-3">
           {/* Mobile logo */}
-          <img 
-            src="/laundromat.chat.mobile.svg" 
-            alt="Laundromat Chat" 
-            className="h-10 w-auto lg:hidden"
+          <img
+            src="/laundromat.chat.mobile.svg"
+            alt="Laundromat Chat"
+            className="h-8 w-auto lg:hidden"
           />
           {/* Desktop logo */}
-          <img 
-            src="/laundromat.chat.svg" 
-            alt="Laundromat Chat" 
-            className="h-8 w-auto hidden lg:block"
+          <img
+            src="/laundromat.chat.svg"
+            alt="Laundromat Chat"
+            className="h-7 w-auto hidden lg:block"
           />
         </div>
-        <div className="flex items-center gap-2 lg:gap-4">
+        <div className="flex items-center gap-2 lg:gap-3">
           <ReportIssueButton
             userId={userId}
             isStaff={userRole === 'staff' || userRole === 'admin'}
@@ -186,10 +186,10 @@ export default function ChatPage() {
           <LanguageToggle inHeader={true} />
           <button
             onClick={handleLogout}
-            className="px-3 py-2 lg:px-4 lg:py-2 text-base lg:text-sm border-2 border-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white font-medium transition-colors text-laundry-blue min-w-[44px] min-h-[44px]"
+            className="px-3 py-2 text-sm border-2 border-laundry-blue rounded-lg hover:bg-laundry-blue hover:text-white font-medium transition-colors text-laundry-blue min-h-[40px] flex items-center justify-center"
           >
             <span className="hidden sm:inline">{t('common.logout')}</span>
-            <span className="sm:hidden text-xl">⏻</span>
+            <span className="sm:hidden text-lg">⏻</span>
           </button>
         </div>
       </header>

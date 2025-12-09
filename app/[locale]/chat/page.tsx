@@ -9,6 +9,7 @@ import MessageList from '@/components/chat/MessageList';
 import MessageInput from '@/components/chat/MessageInput';
 import LanguageToggle from '@/components/ui/LanguageToggle';
 import ReportIssueButton from '@/components/chat/ReportIssueButton';
+import NicknameIndicator from '@/components/ui/NicknameIndicator';
 import { getCachedVisitorId } from '@/lib/fingerprint';
 import { requestNotificationPermission, registerServiceWorker } from '@/lib/notifications';
 
@@ -19,6 +20,7 @@ export default function ChatPage() {
   const locale = useLocale(); // Route locale is now the source of truth
   const [userId, setUserId] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string>('customer');
+  const [userNickname, setUserNickname] = useState<string>('');
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,13 +57,14 @@ export default function ChatPage() {
         // User is authenticated via Supabase Auth
         const { data: userData } = await supabase
           .from('users')
-          .select('id, role, language')
+          .select('id, role, language, nickname')
           .eq('id', session.user.id)
           .single();
 
         if (userData) {
           setUserId(userData.id);
           setUserRole(userData.role || 'customer');
+          setUserNickname(userData.nickname || '');
         } else {
           // Create user record if it doesn't exist
           const { data: newUser } = await supabase
@@ -78,6 +81,7 @@ export default function ChatPage() {
           if (newUser) {
             setUserId(newUser.id);
             setUserRole(newUser.role);
+            setUserNickname(newUser.nickname || '');
           }
         }
       } else {
@@ -88,13 +92,14 @@ export default function ChatPage() {
         if (storedUserId) {
           const { data: userData } = await supabase
             .from('users')
-            .select('id, role, language')
+            .select('id, role, language, nickname')
             .eq('id', storedUserId)
             .single();
 
           if (userData) {
             setUserId(userData.id);
             setUserRole(userData.role || 'customer');
+            setUserNickname(userData.nickname || '');
           } else {
             // User not found, redirect to login
             router.push('/en/login');
@@ -188,6 +193,11 @@ export default function ChatPage() {
           </button>
         </div>
       </header>
+
+      {/* Nickname indicator bar */}
+      <div className="bg-laundry-blue-light border-b border-laundry-blue/20 px-4 py-1">
+        <NicknameIndicator nickname={userNickname} />
+      </div>
 
       <div className="flex-1 flex overflow-hidden relative">
         {/* Room Selector - Always visible, icon-only on mobile */}

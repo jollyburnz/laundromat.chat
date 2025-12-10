@@ -7,7 +7,6 @@ import StaffBadge from './StaffBadge';
 import ModerationTools from './ModerationTools';
 import { detectLanguage } from '@/lib/utils';
 import { showNotification } from '@/lib/notifications';
-import { useMessageTranslations } from '@/lib/hooks/useMessageTranslations';
 
 interface Message {
   id: string;
@@ -38,30 +37,36 @@ interface MessageListProps {
   userId: string;
   userRole?: string;
   onReply?: (message: Message) => void;
+  // Translation props from parent
+  translations?: Record<string, string>;
+  showOriginal?: Record<string, boolean>;
+  toggleOriginal?: (messageId: string) => void;
+  fetchTranslationForMessage?: (message: Message) => Promise<void>;
+  clearCaches?: () => void;
+  locale?: string;
+  onMessagesChange?: (messages: Message[]) => void;
 }
 
-export default function MessageList({ roomId, userId, userRole = 'customer', onReply }: MessageListProps) {
+export default function MessageList({
+  roomId,
+  userId,
+  userRole = 'customer',
+  onReply,
+  translations = {},
+  showOriginal = {},
+  toggleOriginal = () => {},
+  fetchTranslationForMessage = async () => {},
+  clearCaches = () => {},
+  locale = 'en',
+  onMessagesChange = () => {}
+}: MessageListProps) {
   const t = useTranslations();
-  const locale = useLocale(); // Get locale directly from route (source of truth)
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Track previous message count for purge detection
   const prevMessageCountRef = useRef<number>(0);
-
-  // Use custom hook for translation management
-  const {
-    translations,
-    showOriginal,
-    toggleOriginal,
-    fetchTranslationForMessage,
-    clearCaches,
-    isLoading: translationsLoading,
-  } = useMessageTranslations({
-    messages,
-    locale,
-  });
 
   useEffect(() => {
     if (!roomId) return;
@@ -145,7 +150,9 @@ export default function MessageList({ roomId, userId, userRole = 'customer', onR
 
       if (error) throw error;
 
-      setMessages(data || []);
+      const newMessages = data || [];
+      setMessages(newMessages);
+      onMessagesChange(newMessages);
     } catch (err) {
       console.error('Error fetching messages:', err);
     } finally {
@@ -220,9 +227,11 @@ export default function MessageList({ roomId, userId, userRole = 'customer', onR
               return prev;
             }
             // Add message and sort chronologically
-            return [...prev, messageWithData].sort((a, b) =>
+            const updatedMessages = [...prev, messageWithData].sort((a, b) =>
               new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
             );
+            onMessagesChange(updatedMessages);
+            return updatedMessages;
           });
           
           // Show notification for new message
@@ -287,8 +296,13 @@ export default function MessageList({ roomId, userId, userRole = 'customer', onR
       const messageForTranslation = {
         id: replyMessage.id,
         text: replyMessage.text,
-        language: replyMessage.language
-      };
+        language: replyMessage.language,
+        user_id: '', // Not needed for translation
+        room_id: '', // Not needed for translation
+        image_url: null, // Not needed for translation
+        is_staff: false, // Not needed for translation
+        created_at: '', // Not needed for translation
+      } as Message;
       fetchTranslationForMessage(messageForTranslation);
     }
 
@@ -485,7 +499,11 @@ export default function MessageList({ roomId, userId, userRole = 'customer', onR
                 userId={userId}
                 isStaff={true}
                 onMessageDeleted={() => {
-                  setMessages(prev => prev.filter(m => m.id !== msg.id));
+                  setMessages(prev => {
+                    const updatedMessages = prev.filter(m => m.id !== msg.id);
+                    onMessagesChange(updatedMessages);
+                    return updatedMessages;
+                  });
                 }}
               />
             </div>

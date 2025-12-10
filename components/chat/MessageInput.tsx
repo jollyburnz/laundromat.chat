@@ -12,6 +12,8 @@ interface MessageInputProps {
   onMessageSent: () => void;
   replyingTo?: ReplyState | null;
   onCancelReply?: () => void;
+  translations?: Record<string, string>;
+  locale?: string;
 }
 
 interface ReplyState {
@@ -19,11 +21,36 @@ interface ReplyState {
   messageText: string;
   userNickname: string;
   userId: string;
+  language?: string;
 }
 
-export default function MessageInput({ roomId, userId, isStaff, onMessageSent, replyingTo, onCancelReply }: MessageInputProps) {
+export default function MessageInput({
+  roomId,
+  userId,
+  isStaff,
+  onMessageSent,
+  replyingTo,
+  onCancelReply,
+  translations = {},
+  locale = 'en'
+}: MessageInputProps) {
   const t = useTranslations();
   const [isFocused, setIsFocused] = useState(false);
+
+  const getReplyPreviewText = (reply: ReplyState) => {
+    const translationsEnabled = process.env.NEXT_PUBLIC_ENABLE_TRANSLATIONS === 'true';
+
+    if (!translationsEnabled) {
+      return reply.messageText;
+    }
+
+    // Check if we have a translation for this reply message
+    if (reply.language && reply.language !== locale && translations[reply.messageId]) {
+      return translations[reply.messageId];
+    }
+
+    return reply.messageText;
+  };
   const [message, setMessage] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -201,7 +228,7 @@ export default function MessageInput({ roomId, userId, isStaff, onMessageSent, r
                   </span>
                 </div>
                 <div className="text-sm text-gray-600 line-clamp-2 break-words">
-                  {replyingTo.messageText}
+                  {getReplyPreviewText(replyingTo)}
                 </div>
               </div>
               <button

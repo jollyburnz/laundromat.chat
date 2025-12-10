@@ -12,6 +12,7 @@ import ReportIssueButton from '@/components/chat/ReportIssueButton';
 import NicknameIndicator from '@/components/ui/NicknameIndicator';
 import { getCachedVisitorId } from '@/lib/fingerprint';
 import { requestNotificationPermission, registerServiceWorker } from '@/lib/notifications';
+import { useMessageTranslations } from '@/lib/hooks/useMessageTranslations';
 
 export default function ChatPage() {
   const t = useTranslations();
@@ -24,6 +25,21 @@ export default function ChatPage() {
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
   const [replyingTo, setReplyingTo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // Messages state for translation management
+  const [messages, setMessages] = useState<any[]>([]);
+
+  // Use translation hook for managing all translations
+  const {
+    translations,
+    showOriginal,
+    toggleOriginal,
+    fetchTranslationForMessage,
+    clearCaches,
+  } = useMessageTranslations({
+    messages, // Now with actual messages for proper translation management
+    locale,
+  });
 
   useEffect(() => {
     checkAuth();
@@ -151,7 +167,8 @@ export default function ChatPage() {
       messageId: message.id,
       messageText: message.text,
       userNickname: message.user.nickname,
-      userId: message.user_id
+      userId: message.user_id,
+      language: message.language
     });
   };
 
@@ -230,6 +247,13 @@ export default function ChatPage() {
             userId={userId}
             userRole={userRole}
             onReply={handleReply}
+            translations={translations}
+            showOriginal={showOriginal}
+            toggleOriginal={toggleOriginal}
+            fetchTranslationForMessage={fetchTranslationForMessage}
+            clearCaches={clearCaches}
+            locale={locale}
+            onMessagesChange={setMessages}
           />
           {/* MessageInput is now fixed on mobile */}
           <div className="lg:block hidden">
@@ -240,6 +264,8 @@ export default function ChatPage() {
               onMessageSent={handleMessageSent}
               replyingTo={replyingTo}
               onCancelReply={handleCancelReply}
+              translations={translations}
+              locale={locale}
             />
           </div>
         </div>
@@ -254,6 +280,8 @@ export default function ChatPage() {
           onMessageSent={handleMessageSent}
           replyingTo={replyingTo}
           onCancelReply={handleCancelReply}
+          translations={translations}
+          locale={locale}
         />
       </div>
     </div>

@@ -63,22 +63,43 @@ body {
   .text-balance {
     text-wrap: balance;
   }
-  
+
   /* Safe area padding utilities */
   .safe-top {
     padding-top: calc(8px + var(--safe-area-inset-top));
   }
-  
+
   .safe-bottom {
     padding-bottom: calc(16px + var(--safe-area-inset-bottom));
   }
-  
+
   .safe-left {
     padding-left: var(--safe-area-inset-left);
   }
-  
+
   .safe-right {
     padding-right: var(--safe-area-inset-right);
   }
+}
+
+/* Message highlight animations for reply navigation */
+.message-highlight-own {
+  animation: highlight-own 2s ease-out;
+}
+
+.message-highlight-received {
+  animation: highlight-received 2s ease-out;
+}
+
+@keyframes highlight-own {
+  0% { background-color: rgba(0, 102, 204, 0.6); }    /* White overlay on blue */
+  50% { background-color: rgba(0, 102, 204, 0.8); }   /* Lighter white */
+  100% { background-color: rgba(0, 102, 204, 1); }
+}
+
+@keyframes highlight-received {
+  0% { background-color: rgba(59, 130, 246, 0.3); }     /* Blue on white */
+  50% { background-color: rgba(59, 130, 246, 0.2); }    /* Lighter blue */
+  100% { background-color: transparent; }
 }
 

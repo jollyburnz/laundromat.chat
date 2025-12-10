@@ -22,6 +22,7 @@ export default function ChatPage() {
   const [userRole, setUserRole] = useState<string>('customer');
   const [userNickname, setUserNickname] = useState<string>('');
   const [currentRoomId, setCurrentRoomId] = useState<string | null>(null);
+  const [replyingTo, setReplyingTo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -143,6 +144,21 @@ export default function ChatPage() {
     // Message sent, could trigger notifications or other actions
   };
 
+  const handleReply = (message: any) => {
+    if (!message.user) return;
+
+    setReplyingTo({
+      messageId: message.id,
+      messageText: message.text,
+      userNickname: message.user.nickname,
+      userId: message.user_id
+    });
+  };
+
+  const handleCancelReply = () => {
+    setReplyingTo(null);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-laundry-blue-light">
@@ -213,6 +229,7 @@ export default function ChatPage() {
             roomId={currentRoomId}
             userId={userId}
             userRole={userRole}
+            onReply={handleReply}
           />
           {/* MessageInput is now fixed on mobile */}
           <div className="lg:block hidden">
@@ -221,6 +238,8 @@ export default function ChatPage() {
               userId={userId}
               isStaff={userRole === 'staff' || userRole === 'admin'}
               onMessageSent={handleMessageSent}
+              replyingTo={replyingTo}
+              onCancelReply={handleCancelReply}
             />
           </div>
         </div>
@@ -233,6 +252,8 @@ export default function ChatPage() {
           userId={userId}
           isStaff={userRole === 'staff' || userRole === 'admin'}
           onMessageSent={handleMessageSent}
+          replyingTo={replyingTo}
+          onCancelReply={handleCancelReply}
         />
       </div>
     </div>

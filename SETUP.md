@@ -27,9 +27,11 @@ npm install
 9. Run the third migration (adds Spanish language support)
 10. Copy and paste the contents of `supabase/migrations/004_add_spanish_room_names.sql`
 11. Run the fourth migration (adds Spanish names to rooms)
-12. Go to Storage and create a new bucket named `images` with public access
-13. Go to Database > Replication and enable replication for the `messages` table
-14. Go to Settings > API and copy your:
+12. Copy and paste the contents of `supabase/migrations/005_add_reply_system.sql`
+13. Run the fifth migration (adds reply system functionality)
+14. Go to Storage and create a new bucket named `images` with public access
+15. Go to Database > Replication and enable replication for the `messages` table
+16. Go to Settings > API and copy your:
    - Project URL
    - `anon` public key
    - `service_role` key (keep this secret!)

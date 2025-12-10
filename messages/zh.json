@@ -65,7 +65,10 @@
     "describeIssuePlaceholder": "描述問題...",
     "uploadImage": "上傳圖片",
     "messageDeleted": "訊息已刪除",
-    "you": "您"
+    "you": "您",
+    "reply": "回覆",
+    "replyingTo": "回覆",
+    "cancelReply": "取消回覆"
   },
   "rooms": {
     "general": "一般聊天",

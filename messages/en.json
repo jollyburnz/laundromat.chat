@@ -65,7 +65,10 @@
     "describeIssuePlaceholder": "Describe the issue...",
     "uploadImage": "Upload Image",
     "messageDeleted": "Message deleted",
-    "you": "You"
+    "you": "You",
+    "reply": "Reply",
+    "replyingTo": "Replying to",
+    "cancelReply": "Cancel reply"
   },
   "rooms": {
     "general": "General Chat",

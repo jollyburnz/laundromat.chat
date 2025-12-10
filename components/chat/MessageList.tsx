@@ -18,6 +18,15 @@ interface Message {
   language: string | null;
   is_staff: boolean;
   created_at: string;
+  reply_to_message_id?: string;
+  reply_to?: {
+    id: string;
+    text: string;
+    language?: string;
+    user: {
+      nickname: string;
+    };
+  };
   user?: {
     nickname: string;
     role: string;
@@ -28,9 +37,10 @@ interface MessageListProps {
   roomId: string;
   userId: string;
   userRole?: string;
+  onReply?: (message: Message) => void;
 }
 
-export default function MessageList({ roomId, userId, userRole = 'customer' }: MessageListProps) {
+export default function MessageList({ roomId, userId, userRole = 'customer', onReply }: MessageListProps) {
   const t = useTranslations();
   const locale = useLocale(); // Get locale directly from route (source of truth)
   const [messages, setMessages] = useState<Message[]>([]);
@@ -94,13 +104,41 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToMessage = (messageId: string) => {
+    const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+    if (messageElement) {
+      messageElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center' // Center the message in the viewport
+      });
+
+      // Trigger highlight animation by restarting the CSS animation
+      const hasOwnHighlight = messageElement.classList.contains('message-own');
+      const hasReceivedHighlight = messageElement.classList.contains('message-received');
+
+      if (hasOwnHighlight) {
+        messageElement.classList.add('message-highlight-own');
+        setTimeout(() => messageElement.classList.remove('message-highlight-own'), 2000);
+      } else if (hasReceivedHighlight) {
+        messageElement.classList.add('message-highlight-received');
+        setTimeout(() => messageElement.classList.remove('message-highlight-received'), 2000);
+      }
+    }
+  };
+
   const fetchMessages = async () => {
     try {
       const { data, error } = await supabase
         .from('messages')
         .select(`
           *,
-          user:users(id, nickname, role)
+          user:users(id, nickname, role),
+          reply_to:reply_to_message_id(
+            id,
+            text,
+            language,
+            user:users(nickname)
+          )
         `)
         .eq('room_id', roomId)
         .order('created_at', { ascending: true });
@@ -135,27 +173,57 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
             if (prev.some(m => m.id === newMessage.id)) {
               return prev; // Message already exists
             }
-            
-            // Add message temporarily while we fetch user data
-            return [...prev, newMessage];
+            return prev;
           });
           
-          // Fetch user data for the new message
+          // Fetch user data for the new message FIRST
           const { data: userData } = await supabase
             .from('users')
             .select('nickname, role')
             .eq('id', newMessage.user_id)
             .single();
 
-          const messageWithUser = {
+          let messageWithData = {
             ...newMessage,
             user: userData || { nickname: 'Unknown', role: 'customer' },
           };
 
-          // Update the message with user data
-          setMessages(prev => prev.map(m => 
-            m.id === newMessage.id ? messageWithUser : m
-          ));
+          // If this is a reply, fetch the reply_to data
+          if (newMessage.reply_to_message_id) {
+            const { data: replyMessage } = await supabase
+              .from('messages')
+              .select('id, text, language, user_id')
+              .eq('id', newMessage.reply_to_message_id)
+              .single();
+
+            if (replyMessage) {
+              // Fetch the user for the replied message
+              const { data: replyUser } = await supabase
+                .from('users')
+                .select('nickname')
+                .eq('id', replyMessage.user_id)
+                .single();
+
+              messageWithData.reply_to = {
+                id: replyMessage.id,
+                text: replyMessage.text,
+                language: replyMessage.language,
+                user: replyUser ? { nickname: replyUser.nickname } : { nickname: 'Unknown' }
+              };
+            }
+          }
+
+          // NOW add the complete message with all data and ensure chronological ordering
+          setMessages(prev => {
+            // Check again to prevent race conditions
+            if (prev.some(m => m.id === newMessage.id)) {
+              return prev;
+            }
+            // Add message and sort chronologically
+            return [...prev, messageWithData].sort((a, b) =>
+              new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+            );
+          });
           
           // Show notification for new message
           if (newMessage.user_id !== userId) {
@@ -170,7 +238,7 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
           
           // Fetch translation if needed using the hook
           if (newMessage.language && newMessage.language !== locale) {
-            fetchTranslationForMessage(messageWithUser);
+            fetchTranslationForMessage(messageWithData);
           }
         }
       )
@@ -272,32 +340,57 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
     return (
       <div
         key={msg.id}
-        className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
+        className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} relative mb-2`}
       >
-        <div className={`max-w-[85%] sm:max-w-[75%] lg:max-w-lg px-4 py-3 rounded-2xl relative ${
-          isOwnMessage
-            ? 'bg-laundry-blue text-white ml-12'
-            : 'bg-white border border-gray-200 text-black mr-12 shadow-md'
-        }`}>
+        <div
+          className={`max-w-[85%] sm:max-w-[75%] lg:max-w-lg px-4 py-3 rounded-2xl relative ${
+            isOwnMessage
+              ? 'bg-laundry-blue text-white ml-12 message-own'
+              : 'bg-white border border-gray-200 text-black mr-12 shadow-md message-received'
+          }`}
+          data-message-id={msg.id}
+        >
 
-          {/* Translation indicator at top for all messages that need translation */}
-          {needsTranslation && (
-            <div className="mb-2">
-              <button
-                onClick={() => toggleOriginal(msg.id)}
-                className={`inline-flex items-center gap-1 text-xs ${
-                    isOwnMessage
-                      ? 'text-white hover:text-white/80'
-                      : 'text-laundry-blue hover:text-laundry-blue-dark'
-                  } transition-colors`}
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {showOriginal[msg.id] ? t('chat.translated') : t('chat.showOriginal')}
-              </button>
+          {/* Header with Translation and Reply indicators */}
+          {(needsTranslation || (!isOwnMessage && onReply) || msg.reply_to) && (
+            <div className="mb-2 flex items-center gap-3">
+              {/* Translation indicator */}
+              {needsTranslation && (
+                <button
+                  onClick={() => toggleOriginal(msg.id)}
+                  className={`inline-flex mr-auto items-center gap-1 text-xs ${
+                      isOwnMessage
+                        ? 'text-white hover:text-white/80'
+                        : 'text-laundry-blue hover:text-laundry-blue-dark'
+                    } transition-colors`}
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {showOriginal[msg.id] ? t('chat.translated') : t('chat.showOriginal')}
+                </button>
+              )}
+
+              {/* Reply button - consistent with translation button */}
+              {!isOwnMessage && onReply && (
+                <button
+                  onClick={() => onReply(msg)}
+                  className={`inline-flex ml-auto items-center gap-1 text-xs transition-colors ${
+                      isOwnMessage
+                        ? 'text-white hover:text-white/80'
+                        : 'text-laundry-blue hover:text-laundry-blue-dark'
+                    }`}
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                  </svg>
+                  <span className="font-medium">{t('chat.reply')}</span>
+                </button>
+              )}
+
             </div>
           )}
+
 
           {/* User name for received messages */}
           {!isOwnMessage && (
@@ -309,24 +402,47 @@ export default function MessageList({ roomId, userId, userRole = 'customer' }: M
             </div>
           )}
 
-          {/* Message content */}
-          <div className="space-y-2">
-            {msg.image_url && (
-              <img
-                src={msg.image_url}
-                alt="Message attachment"
-                className="max-w-full h-auto rounded-lg"
-              />
-            )}
-
-            {displayText && (
-              <p className={`text-base whitespace-pre-wrap break-words leading-relaxed ${
-                isOwnMessage ? 'text-white' : 'text-black'
+        {/* Message content */}
+        <div className="space-y-2">
+          {/* Embedded original message for replies */}
+          {msg.reply_to && (
+            <div
+              className={`p-3 rounded-lg border-l-3 border-laundry-blue/50 cursor-pointer transition-colors ${
+                isOwnMessage
+                  ? 'bg-white/10 hover:bg-white/20'
+                  : 'bg-laundry-blue-light/30 hover:bg-laundry-blue-light/40'
+              }`}
+              onClick={() => msg.reply_to && scrollToMessage(msg.reply_to.id)}
+            >
+              <div className={`text-sm font-medium mb-1 ${
+                isOwnMessage ? 'text-white/90' : 'text-laundry-blue'
               }`}>
-                {displayText}
-              </p>
-            )}
-          </div>
+                {msg.reply_to.user.nickname}
+              </div>
+              <div className={`text-sm line-clamp-2 break-words ${
+                isOwnMessage ? 'text-white/80' : 'text-gray-600'
+              }`}>
+                {msg.reply_to.text}
+              </div>
+            </div>
+          )}
+
+          {msg.image_url && (
+            <img
+              src={msg.image_url}
+              alt="Message attachment"
+              className="max-w-full h-auto rounded-lg"
+            />
+          )}
+
+          {displayText && (
+            <p className={`text-base whitespace-pre-wrap break-words leading-relaxed ${
+              isOwnMessage ? 'text-white' : 'text-black'
+            }`}>
+              {displayText}
+            </p>
+          )}
+        </div>
 
           {/* Timestamp */}
           <div className={`text-xs opacity-70 mt-2 text-right ${

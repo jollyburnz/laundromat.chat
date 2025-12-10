@@ -221,13 +221,13 @@ export default function MessageInput({
           {/* Reply Preview - Shows embedded original message */}
           {replyingTo && (
             <div>
-              <div className="mb-3 p-3 bg-gray-50">
+              <div className="mb-3 p-3">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium text-sm text-laundry-blue">
                     {replyingTo.userNickname}
                   </span>
                 </div>
-                <div className="text-sm text-gray-600 line-clamp-2 break-words">
+                <div className="text-sm text-gray-600 line-clamp-1 break-words">
                   {getReplyPreviewText(replyingTo)}
                 </div>
               </div>

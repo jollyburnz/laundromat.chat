@@ -390,57 +390,13 @@ export default function MessageList({
           }`}
           data-message-id={msg.id}
         >
-
-          {/* Header with Translation and Reply indicators */}
-          {(needsTranslation || (!isOwnMessage && onReply) || msg.reply_to) && (
-            <div className="mb-2 flex items-center gap-3">
-              {/* Translation indicator */}
-              {needsTranslation && (
-                <button
-                  onClick={() => toggleOriginal(msg.id)}
-                  className={`inline-flex mr-auto items-center gap-1 text-xs ${
-                      isOwnMessage
-                        ? 'text-white hover:text-white/80'
-                        : 'text-laundry-blue hover:text-laundry-blue-dark'
-                    } transition-colors`}
-                >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {showOriginal[msg.id] ? t('chat.translated') : t('chat.showOriginal')}
-                </button>
-              )}
-
-              {/* Reply button - consistent with translation button */}
-              {!isOwnMessage && onReply && (
-                <button
-                  onClick={() => onReply(msg)}
-                  className={`inline-flex ml-auto items-center gap-1 text-xs transition-colors ${
-                      isOwnMessage
-                        ? 'text-white hover:text-white/80'
-                        : 'text-laundry-blue hover:text-laundry-blue-dark'
-                    }`}
-                >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                  </svg>
-                  <span className="font-medium">{t('chat.reply')}</span>
-                </button>
-              )}
-
-            </div>
-          )}
-
-
-          {/* User name for received messages */}
-          {!isOwnMessage && (
-            <div className="flex items-center gap-2 mb-1">
-              <span className="font-medium text-sm text-laundry-blue">
-                {msg.user?.nickname || 'Unknown'}
-              </span>
-              <StaffBadge isStaff={msg.is_staff} />
-            </div>
-          )}
+          {/* User name for messages */}
+          <div className="flex items-center gap-2 mb-1">
+            <span className={`font-medium text-sm ${isOwnMessage ? 'text-white' : 'text-laundry-blue'}`}>
+              {msg.user?.nickname || 'Unknown'}
+            </span>
+            <StaffBadge isStaff={msg.is_staff} />
+          </div>
 
         {/* Message content */}
         <div className="space-y-2">
@@ -490,6 +446,46 @@ export default function MessageList({
           }`}>
             {formatTime(msg.created_at)}
           </div>
+
+          {/* Footer with Translation and Reply indicators */}
+          {(needsTranslation || (!isOwnMessage && onReply) || msg.reply_to) && (
+            <div className={`flex  ${(needsTranslation || (!isOwnMessage && onReply)) ? 'border-t' : ''} ${isOwnMessage ? 'border-white/10' : 'border-gray-100'} mt-2 items-center gap-3`}>
+              {/* Translation indicator */}
+              {needsTranslation && (
+                <button
+                  onClick={() => toggleOriginal(msg.id)}
+                  className={`inline-flex mr-auto items-center gap-1 text-xs ${
+                      isOwnMessage
+                        ? 'text-white hover:text-white/80'
+                        : 'text-laundry-blue hover:text-laundry-blue-dark'
+                    } transition-colors`}
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {showOriginal[msg.id] ? t('chat.translated') : t('chat.showOriginal')}
+                </button>
+              )}
+
+              {/* Reply button - consistent with translation button */}
+              {!isOwnMessage && onReply && (
+                <button
+                  onClick={() => onReply(msg)}
+                  className={`inline-flex ml-auto items-center gap-1 text-xs transition-colors ${
+                      isOwnMessage
+                        ? 'text-white hover:text-white/80'
+                        : 'text-laundry-blue hover:text-laundry-blue-dark'
+                    }`}
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                  </svg>
+                  <span className="font-medium">{t('chat.reply')}</span>
+                </button>
+              )}
+
+            </div>
+          )}
 
           {/* Moderation tools for staff */}
           {(userRole === 'staff' || userRole === 'admin') && (

@@ -259,7 +259,7 @@ export default function MessageList({ roomId, userId, userRole = 'customer', onR
 
   const getDisplayText = (msg: Message) => {
     const translationsEnabled = process.env.NEXT_PUBLIC_ENABLE_TRANSLATIONS === 'true';
-    
+
     if (showOriginal[msg.id] || !translationsEnabled) {
       return msg.text;
     }
@@ -267,6 +267,32 @@ export default function MessageList({ roomId, userId, userRole = 'customer', onR
       return translations[msg.id];
     }
     return msg.text;
+  };
+
+  const getReplyDisplayText = (replyMessage: { id: string; text: string; language?: string }) => {
+    const translationsEnabled = process.env.NEXT_PUBLIC_ENABLE_TRANSLATIONS === 'true';
+
+    if (!translationsEnabled) {
+      return replyMessage.text;
+    }
+
+    // Check if we already have a translation for this reply message
+    if (replyMessage.language && replyMessage.language !== locale && translations[replyMessage.id]) {
+      return translations[replyMessage.id];
+    }
+
+    // If no translation exists but languages differ, trigger translation
+    if (replyMessage.language && replyMessage.language !== locale && !translations[replyMessage.id]) {
+      // Create a message-like object for the translation system
+      const messageForTranslation = {
+        id: replyMessage.id,
+        text: replyMessage.text,
+        language: replyMessage.language
+      };
+      fetchTranslationForMessage(messageForTranslation);
+    }
+
+    return replyMessage.text;
   };
 
   const formatTime = (dateString: string) => {
@@ -422,7 +448,7 @@ export default function MessageList({ roomId, userId, userRole = 'customer', onR
               <div className={`text-sm line-clamp-2 break-words ${
                 isOwnMessage ? 'text-white/80' : 'text-gray-600'
               }`}>
-                {msg.reply_to.text}
+                {getReplyDisplayText(msg.reply_to)}
               </div>
             </div>
           )}
